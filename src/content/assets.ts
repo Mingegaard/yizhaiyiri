@@ -50,7 +50,7 @@ export const studyDaybedAsset: ModelAsset = {
   url: '/models/tang-study-daybed.glb', position: studyDaybed.position, scale: 1, rotation: [0, 0, 0],
 };
 export const studyWritingTableAsset: ModelAsset = {
-  url: '/models/tang-study-writing-table.glb', position: studyWritingTable.position,
+  url: '/models/tang-study-writing-table.glb?v=3d2decb50925', position: studyWritingTable.position,
   rotation: studyWritingTable.rotation, scale: 1,
 };
 export function gameProp(node: string, position: Vec3 = [0, 0, 0]): ModelAsset {

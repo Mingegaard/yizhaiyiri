@@ -25,7 +25,7 @@
   "cabinetScaleRelativeToPrevious": 0.75,
   "cabinetBaseHeight": 0.774,
   "triangles": 32736,
-  "bytes": 1356384,
+  "bytes": 1356680,
   "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/tang-study-writing-table.glb",
   "references": [
     "art-source/writing-table-reference.jpg",
@@ -34,7 +34,7 @@
   "features": [
     "pierced cloud-scroll end panels",
     "curved feet",
-    "two book stacks / twelve volumes",
+    "two book stacks / twelve volumes at 75% scale",
     "open twin-door scroll box",
     "twelve rolled manuscripts with hanging tags",
     "flat outlined pigments"
@@ -44,7 +44,7 @@
     "exitCode": 0,
     "blenderVersion": "5.2.0 LTS"
   },
-  "sha256": "592cd1ae8238617903b9d17a478fcae4fa9e9984511d558f6bf3007d8c743c67",
+  "sha256": "3d2decb50925301cf23fe6d133d18e9bf882b5a0b0631dbcd6129a01abc5f8f9",
   "placement": {
     "position": [
       1.7205,
@@ -56,10 +56,12 @@
     "longAxis": "north–south",
     "measuredGapMetres": 0.1
   },
-  "previousVersion": "/Users/gaomingze1/.codex/backups/yizhaiyiri-before-table-adjustment-20261101/tang-study-writing-table.glb",
+  "previousVersion": "git:8c8d5d04cefa71f0fdf2b8d97d8e51e2529e3c5a:public/models/tang-study-writing-table.glb",
   "tallyVesselPosition": [
     1.7205,
     1.049,
     -3.53
-  ]
+  ],
+  "bookStackScale": 0.75,
+  "bookStackBaseHeight": 0.777
 }

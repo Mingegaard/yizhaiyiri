@@ -15,6 +15,8 @@ OUT = ROOT / 'public/models/tang-study-writing-table.glb'
 LENGTH, DEPTH, TABLE_TOP = 2.32, .60, .77
 # Preserve the previous cabinet proportions, then reduce the current assembly to 75%.
 CABINET_SCALE = .75 * .75
+BOOK_STACK_SCALE = .75
+BOOK_STACK_BASE = TABLE_TOP + .007
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 root = bpy.data.objects.new('study_writing_table_furniture', None)
@@ -183,6 +185,7 @@ for y in [-.19, .06, .20]:
 
 
 def book_stack(name, x, y, width, depth, count, cover, offset=0):
+    before_stack = set(root.children)
     for i in range(count):
         z = .779 + i * .031
         drift = math.sin(i * 2 + offset) * .005
@@ -203,6 +206,12 @@ def book_stack(name, x, y, width, depth, count, cover, offset=0):
     z = .779 + (count - 1) * .031 + .032
     box(name + '_title_slip', (x + width * .15, y, z),
         (.052, depth * .66, .0015), 'label', .001, True)
+    # Resize each complete stack about its tabletop footprint, including pages,
+    # covers, bindings and title slip, while retaining its placement and base.
+    anchor = Vector((x, y, BOOK_STACK_BASE))
+    for obj in set(root.children) - before_stack:
+        obj.location = anchor + (obj.location - anchor) * BOOK_STACK_SCALE
+        obj.scale *= BOOK_STACK_SCALE
 
 
 book_stack('vermilion_folios', -.884, .006, .34, .407, 6, 'book_red')
@@ -260,7 +269,7 @@ for row, count in enumerate([5, 4, 3]):
              (x, front_y - .025, z - .048)], .0006, 'binding')
 
 # Resize the complete cabinet assembly, including doors, rolls and tags.
-# Its base remains in contact with the tabletop; books and table stay unchanged.
+# Its base remains in contact with the tabletop; the table stays unchanged.
 cabinet_anchor = Vector((cx, cy, base))
 tabletop_anchor = Vector((cx, cy, TABLE_TOP + .004))
 for obj in set(root.children) - before_cabinet:
@@ -321,11 +330,12 @@ report = {
     'boundsBlender': [lo, hi], 'dimensionsXYZBlender': [hi[i] - lo[i] for i in range(3)],
     'tabletopHeight': TABLE_TOP, 'meshes': len(doc['meshes']), 'materials': len(doc['materials']),
     'cabinetScale': CABINET_SCALE, 'cabinetScaleRelativeToPrevious': .75, 'cabinetBaseHeight': TABLE_TOP + .004,
+    'bookStackScale': BOOK_STACK_SCALE, 'bookStackBaseHeight': BOOK_STACK_BASE,
     'triangles': sum(p['indices'] is not None and doc['accessors'][p['indices']]['count'] // 3
                      for mesh in doc['meshes'] for p in mesh['primitives']),
     'bytes': OUT.stat().st_size, 'output': str(OUT),
     'references': ['art-source/writing-table-reference.jpg', 'art-source/writing-table-layout-reference.png'],
-    'features': ['pierced cloud-scroll end panels', 'curved feet', 'two book stacks / twelve volumes',
+    'features': ['pierced cloud-scroll end panels', 'curved feet', 'two book stacks / twelve volumes at 75% scale',
                  'open twin-door scroll box', 'twelve rolled manuscripts with hanging tags', 'flat outlined pigments'],
 }
 (ROOT / 'art-source/study-writing-table-provenance.json').write_text(json.dumps(report, indent=2) + '\n')
