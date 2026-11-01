@@ -17,6 +17,7 @@ import { daybedMeditationPose, isNearDaybed, meditationCameraEase, MEDITATION_CA
 import { KitchenSmoke } from './KitchenSmoke';
 import { companionPlaces, healthyFocusPose, isNearHealthyCompanion } from './healthyCompanion';
 import { AtmosphereMotionContext } from './atmosphereMotion';
+import { advanceWalkingCamera, createWalkingCamera, resetWalkingCamera, walkingCameraPose } from './walkingCamera';
 import type { SceneCanvasProps, SceneDefinition, SceneId, Vec3 } from './types';
 
 interface WalkingPose { position: Vec3; yaw: number; pitch: number }
@@ -28,6 +29,8 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
   const saved = poses.current[definition.id];
   const view = useRef({ yaw: saved?.yaw ?? 0, pitch: saved?.pitch ?? 0 });
   const position = useRef<Vec3>(saved ? [...saved.position] : [...definition.spawn]);
+  const walkingCamera = useRef(createWalkingCamera(position.current, view.current));
+  const reducedMotion = useRef(false);
   const pointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const latest = useRef({ blocked: blocked || !!overview, overview: !!overview, focused: !!focusView, focusView, celebrating, healthActivityId, onCompanionNear, onPortalNear, onDeskNear, onDaybedNear, onFocusReady, onPosition });
   const near = useRef<string | null>(null);
@@ -50,6 +53,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
       : ['a3-letter', 'a3-defense'].includes(storyTravel.nodeId) ? point[1]
       : storyTravel.nodeId === 'a5-clothes' ? 2.1 : point[1] + .35;
     view.current = { yaw: Math.atan2(dx, -dz), pitch: Math.atan2(gazeHeight - EYE_HEIGHT - next[1], Math.hypot(dx, dz)) };
+    resetWalkingCamera(walkingCamera.current, position.current, view.current);
     previousReport.current = '';
   }, [storyTravel?.id]);
   useEffect(() => { previousReport.current = ''; }, [storyNodeId]);
@@ -57,6 +61,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
     if (!travel || travel.sceneId !== definition.id) return;
     position.current = [...travel.position];
     view.current = { yaw: travel.yaw, pitch: 0 };
+    resetWalkingCamera(walkingCamera.current, position.current, view.current);
     previousReport.current = '';
   }, [travel?.id, definition.id]);
 
@@ -67,10 +72,18 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
       camera.fov = 64;
       camera.updateProjectionMatrix();
     }
-    const pose = firstPersonPose(position.current, view.current.yaw, view.current.pitch, latest.current.focused, size.width / size.height);
+    const pose = walkingCameraPose(walkingCamera.current, position.current);
     camera.position.set(...pose.position);
     camera.lookAt(...pose.target);
   }, [camera, size.width, size.height, overview]);
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => { reducedMotion.current = preference.matches; };
+    update();
+    preference.addEventListener('change', update);
+    return () => preference.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     const watched = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']);
@@ -145,7 +158,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
   useFrame((_, rawDelta) => {
     const dt = Math.min(rawDelta, .05);
     const key = keys.current;
-    const paused = latest.current.blocked || latest.current.focused;
+    const paused = latest.current.blocked || latest.current.focused || document.hidden;
     if (!paused) {
       const input = walkingInput(key, inputRef.current);
       view.current.yaw += input.turn * dt * 1.2;
@@ -154,6 +167,12 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
         input.forward, input.right,
         dt, definition,
       );
+    }
+
+    if (latest.current.focused || latest.current.overview || latest.current.celebrating) {
+      resetWalkingCamera(walkingCamera.current, position.current, view.current);
+    } else {
+      advanceWalkingCamera(walkingCamera.current, position.current, view.current, dt, paused, reducedMotion.current);
     }
 
     // Focus never changes the walking refs, so leaving it restores the exact prior pose.
@@ -185,7 +204,9 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
         }
       } else {
         seatTransition.current = null;
-        const pose = firstPersonPose(position.current, view.current.yaw, view.current.pitch, latest.current.focused, size.width / size.height);
+        const pose = latest.current.focused
+          ? firstPersonPose(position.current, view.current.yaw, view.current.pitch, true, size.width / size.height)
+          : walkingCameraPose(walkingCamera.current, position.current);
         camera.position.set(...pose.position);
         target.current.set(...pose.target);
         camera.lookAt(target.current);
