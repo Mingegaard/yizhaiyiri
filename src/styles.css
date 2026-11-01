@@ -33,7 +33,6 @@ small { font-size: 12px; }
 .estate-nav { display: flex; align-items: center; gap: 15px; pointer-events: auto; }
 .estate-nav button { font-size: 12px; color: #455040; min-height: 38px; padding: 8px 10px; border-radius: 4px; background: #f4f1e6a6; backdrop-filter: blur(8px); }
 .estate-nav button:hover { background: #f9f6e7e6; }
-.estate-demo { position: absolute; top: 128px; left: 35px; font-size: 9px; color: #6d6956; letter-spacing: 1px; background: #eee8d999; padding: 5px 8px; border-radius: 3px; }
 .world-prompt { position: absolute; z-index: 3; left: 50%; bottom: 16%; transform: translateX(-50%); font-size: 13px; letter-spacing: 2px; color: #f7f4e6; padding: 14px 21px; background: #344939d9; border: 1px solid #dedbc33d; border-radius: 5px; backdrop-filter: blur(8px); box-shadow: 0 5px 30px #14271822; white-space: nowrap; }
 .world-prompt:hover { background: #344939; }
 .estate-bottom-left { position: absolute; left: 35px; bottom: 31px; max-width: 50%; }
@@ -127,7 +126,6 @@ small { font-size: 12px; }
   .estate-nav { gap: 6px; }
   .estate-nav button { padding: 8px; font-size: 10px; gap: 6px; }
   .estate-nav button svg { width: 16px; }
-  .estate-demo { top: 111px; left: 20px; font-size: 8px; }
   .estate-bottom-left { left: 20px; bottom: 31px; max-width: calc(100% - 100px); }
   .daily-note { font-size: 10px; padding: 9px; text-align: left; line-height: 1.8; }
   .daily-note > span { gap: 6px; }
@@ -149,7 +147,6 @@ small { font-size: 12px; }
 }
 @media(max-height: 520px) {
   .estate-header { padding-top: 16px; }
-  .estate-demo { top: 100px; }
   .world-prompt { bottom: 32px; }
   .estate-bottom-left { bottom: 20px; }
 }
@@ -188,7 +185,6 @@ small { font-size: 12px; }
 .estate-title > span { font-family: var(--serif); letter-spacing: 8px; color: #514d40; }
 .estate-title small { color: #766e5c; }
 .estate-nav button, .daily-note { color: #5c594a; background: #f5eddbe0; border: 1px solid #c8b99580; border-radius: 2px; }
-.estate-demo { background: #f4ead3b3; color: #8d7358; }
 .estate-tools button { border: 1px solid #bcae8c80; background: #f5eddbb8; color: #6b725d; }
 .background-music-toggle { position: fixed; right: 125px; bottom: 24px; z-index: 5; width: 33px; height: 33px; padding: 7px; border: 1px solid #bcae8c80; border-radius: 50%; background: #f5eddbb8; color: #6b725d; opacity: .7; }
 .background-music-toggle:hover, .background-music-toggle:focus-visible { opacity: 1; }

@@ -271,7 +271,6 @@ export default function App() {
           <button aria-label="记忆本" onClick={() => setPanel('memory')}><BookOpen size={18}/><span>记忆本</span></button>
         </nav>
       </header>
-      {demo ? <button className="estate-demo" onClick={() => setPanel('settings')}>演示 · 10 秒打坐</button> : null}
       {!panel && !preview && !viewingOverview ? <>
         {daybedNear || deskNear || (companionNear && availableActivity) ? <div className="study-prompts">
           {companionNear && availableActivity ? <button className="world-prompt" data-testid="companion-prompt" onClick={() => setPanel('health-action')}>与银钩相伴</button> : null}
