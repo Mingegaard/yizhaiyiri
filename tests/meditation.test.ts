@@ -41,7 +41,7 @@ describe('床榻打坐沿用书桌专注规则', () => {
     expect(done.session).toBeNull();
     expect(done.rods).toBe(10);
     expect(done.memories[0]).toMatchObject({ kind: 'focus', title: '完成一段打坐', rods: 1, durationMinutes: 30 });
-    expect(memorySentences(done.memories)).toContain('今日专注 30 分钟。');
+    expect(memorySentences(done.memories)).toContain('专注总时长 30 分钟。');
     expect(reduceGame(done, { type: 'reconcile' }, now + 9999999)).toBe(done);
     expect(reduceGame(start, { type: 'cancelTimer' }, now + 60000)).toMatchObject({ session: null, rods: 9, memories: [] });
   });

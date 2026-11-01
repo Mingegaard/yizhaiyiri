@@ -12,6 +12,7 @@ export interface MemoryEntry {
   photoId?: string;
   cardId?: string;
   durationMinutes?: number;
+  chapterTitle?: string;
 }
 export interface TimerSession {
   id: string;
@@ -39,6 +40,7 @@ export interface StoryProgress {
   collectedFlags?: string[];
   storyCompleted: boolean;
   rewardGranted: boolean;
+  chapterVisits?: { date: string; act: number; timestamp: number }[];
 }
 export interface GameState {
   version: 1;

@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { ArrowLeft, Camera, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { MemoryEntry } from '../game/types';
+import type { MemoryEntry, StoryProgress } from '../game/types';
 import { localDay } from '../game/engine';
 import { photoBlob } from '../game/storage';
 import { cardImageUrl, knowledgeCards } from '../content/cards';
@@ -117,14 +117,14 @@ function CalendarPage({ month, selectedDate, today, memories, entries, demo, onM
   </div>;
 }
 
-export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: boolean }) {
+export function MemoryBook({ memories, demo, chapterVisits }: { memories: MemoryEntry[]; demo: boolean; chapterVisits?: StoryProgress['chapterVisits'] }) {
   const today = localDay(Date.now());
   const [view, setView] = useState<'day' | 'calendar'>('day');
   const [openedCardId, setOpenedCardId] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState(today);
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const heading = useRef<HTMLHeadingElement>(null);
-  const bookMemories = useMemo(() => memoriesForBook(memories, demo), [memories, demo]);
+  const bookMemories = useMemo(() => memoriesForBook(memories, demo, chapterVisits), [memories, demo, chapterVisits]);
   const entries = useMemo(() => bookMemories.filter(entry => entry.date === selectedDate).sort((a, b) => a.timestamp - b.timestamp), [bookMemories, selectedDate]);
   const sentences = useMemo(() => memorySentences(entries), [entries]);
   const selected = dateFromKey(selectedDate);

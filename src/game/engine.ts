@@ -1,4 +1,4 @@
-import type { ActivityId, GameCommand, GameState, MemoryEntry, TimerSession } from './types';
+import type { ActivityId, GameCommand, GameState, MemoryEntry, StoryProgress, TimerSession } from './types';
 import { healthyActivityAt, healthyWindowEnd } from './healthSchedule';
 import { healthyCardPools } from '../content/cards';
 import { STORY_NODES } from '../story/content';
@@ -47,6 +47,14 @@ function addMemory(state: GameState, memory: MemoryEntry, completedKey?: string)
     ...state, rods: state.rods + memory.rods, memories: [...state.memories, memory],
     completedActivities: completedKey ? [...state.completedActivities, completedKey] : state.completedActivities,
   };
+}
+
+function rememberChapterVisit(story: StoryProgress, now: number): StoryProgress {
+  const act = STORY_NODES[story.nodeId]?.act;
+  const date = localDay(now);
+  const visits = story.chapterVisits ?? [];
+  if (act === undefined || visits.some(visit => visit.date === date && visit.act === act)) return story;
+  return { ...story, chapterVisits: [...visits, { date, act, timestamp: now }] };
 }
 
 function finishTimer(state: GameState, now: number, activityNow: number): GameState {
@@ -115,14 +123,14 @@ export function reduceGame(input: GameState, command: GameCommand, now: number, 
       if (state.rods < ADVENTURE_COST) throw new Error('再积攒一些算筹，满 10 个就能出发。');
       const previous = state.story;
       return { ...state, rods: state.rods - ADVENTURE_COST,
-        story: previous ? {
+        story: rememberChapterVisit(previous ? {
           ...previous,
           entryConfirmed: true,
           nodeId: previous.storyCompleted ? 'opening' : previous.nodeId,
           viewedFlags: previous.storyCompleted ? [] : previous.viewedFlags,
           collectedFlags: [...new Set([...(previous.collectedFlags ?? []), ...previous.viewedFlags])],
           storyCompleted: false,
-        } : { entryConfirmed: true, nodeId: 'opening', viewedFlags: [], collectedFlags: [], storyCompleted: false, rewardGranted: false } };
+        } : { entryConfirmed: true, nodeId: 'opening', viewedFlags: [], collectedFlags: [], storyCompleted: false, rewardGranted: false }, now) };
     }
     case 'inspectStory': {
       const story = state.story;
@@ -143,7 +151,7 @@ export function reduceGame(input: GameState, command: GameCommand, now: number, 
       const viewedFlags = [...new Set([...story.viewedFlags, `read:${node.id}`, ...(node.evidenceFlags ?? [])])];
       const collectedFlags = [...new Set([...(story.collectedFlags ?? []), ...viewedFlags])];
       if (node.nextId) {
-        return { ...state, story: { ...story, nodeId: node.nextId, viewedFlags, collectedFlags } };
+        return { ...state, story: rememberChapterVisit({ ...story, nodeId: node.nextId, viewedFlags, collectedFlags }, now) };
       }
       const finished = { ...state, story: { ...story, viewedFlags, collectedFlags, storyCompleted: true, rewardGranted: true } };
       if (story.rewardGranted) return finished;

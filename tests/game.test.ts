@@ -163,6 +163,24 @@ function completeStory(input: GameState, target?: string): GameState {
 }
 
 describe('李宅异闻', () => {
+  it('进入章节即记录日期，同日不重复；跨日重入有记录，不提前发奖励', () => {
+    const entered = enterStory();
+    expect(entered.story?.chapterVisits).toEqual([{ date: localDay(noon), act: 0, timestamp: noon }]);
+    const next = reduceGame(entered, { type: 'advanceStory', nodeId: 'opening' }, noon + 1);
+    expect(next.story?.chapterVisits).toEqual(entered.story?.chapterVisits);
+    const secondChapter = completeStory(next, 'book-background');
+    expect(secondChapter.story?.chapterVisits?.map(visit => visit.act)).toEqual([0, 1]);
+    expect(secondChapter.memories).toEqual([]);
+    expect(secondChapter.rods).toBe(0);
+    const tomorrow = noon + 86400000;
+    const returned = reduceGame({ ...JSON.parse(JSON.stringify(secondChapter)), rods: 20 }, { type: 'startStory' }, tomorrow);
+    expect(returned.story?.chapterVisits?.at(-1)).toEqual({ date: localDay(tomorrow), act: 1, timestamp: tomorrow });
+    const repeated = reduceGame(returned, { type: 'startStory' }, tomorrow + 1);
+    expect(repeated.story?.chapterVisits).toEqual(returned.story?.chapterVisits);
+    expect(repeated.memories).toEqual([]);
+    expect(repeated.rods).toBe(0);
+  });
+
   it('九筹拒绝入场，十筹入场成功，余额不足时不能因已有进度而免费进入', () => {
     expect(() => reduceGame({ ...createInitialState(), rods: 9 }, { type: 'startStory' }, noon)).toThrow();
     const entered = enterStory();

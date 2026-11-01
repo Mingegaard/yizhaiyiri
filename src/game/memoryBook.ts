@@ -1,6 +1,7 @@
 import { knowledgeCards } from '../content/cards';
 import { localDay } from './engine';
-import type { ActivityId, MemoryEntry } from './types';
+import { CHAPTERS } from '../story/chapters';
+import type { ActivityId, MemoryEntry, StoryProgress } from './types';
 
 type MemoryActivity = ActivityId | 'legacy-breakfast' | 'meal' | 'adventure' | 'other';
 const activityOrder: MemoryActivity[] = ['breakfast', 'legacy-breakfast', 'lunch', 'outdoors', 'dinner', 'sleep', 'meal', 'adventure', 'other'];
@@ -10,7 +11,12 @@ export const memoryActivityLabels: Record<MemoryActivity, string> = {
 };
 
 /** Demo books keep only the newest card; reward history still drives the card pool. */
-export function memoriesForBook(memories: MemoryEntry[], demo: boolean): MemoryEntry[] {
+export function memoriesForBook(memories: MemoryEntry[], demo: boolean, visits: StoryProgress['chapterVisits'] = []): MemoryEntry[] {
+  if (visits.length) memories = [...memories, ...visits.flatMap(visit => {
+    const chapterTitle = CHAPTERS[visit.act]?.replace(/^\S+\s+/, '');
+    return chapterTitle ? [{ id: `story:chapter:${visit.date}:${visit.act}`, date: visit.date, timestamp: visit.timestamp,
+      kind: 'adventure' as const, title: chapterTitle, chapterTitle, rods: 0 }] : [];
+  })];
   if (!demo) return memories;
   let latest: MemoryEntry | undefined;
   for (const entry of memories) {
@@ -54,34 +60,25 @@ export function memoryColumns(entries: MemoryEntry[]) {
 }
 
 export function memorySentences(entries: MemoryEntry[]): string[] {
-  if (!entries.length) return ['今日尚未留下记录。'];
-  const sentences = new Set<string>();
-  const cardIds = new Set(entries.flatMap(entry => entry.cardId ? [entry.cardId] : []));
-  for (const id of cardIds) {
-    const body = knowledgeCards[id]?.body;
-    for (const sentence of body?.match(/[^。！？!?]+[。！？!?]?[”’」』]?/g) ?? []) {
-      const trimmed = sentence.trim();
-      if (trimmed) sentences.add(/[。！？!?][”’」』]?$/.test(trimmed) ? trimmed : `${trimmed}。`);
-    }
+  const focus = entries.filter(entry => entry.kind === 'focus' || entry.kind === 'meditation')
+    .reduce((sum, entry) => sum + (entry.durationMinutes ?? 0), 0);
+  const sentences = [`专注总时长 ${Number(focus.toFixed(1))} 分钟。`];
+  const health = [
+    { id: 'breakfast', done: '与银钩一起晨读', received: '与银钩一起阅读了' },
+    { id: 'lunch', done: '与银钩一起朝食', received: '与银钩一起品尝了' },
+    { id: 'outdoors', done: '与银钩一起外出', received: '银钩外出并遇到了' },
+    { id: 'sleep', done: '与银钩一起早早入眠', received: '与银钩一起早睡并进入梦境' },
+  ] as const;
+  for (const activity of health) {
+    const completed = entries.filter(entry => memoryActivity(entry) === activity.id && !(activity.id === 'sleep' && entry.kind === 'meditation'));
+    if (!completed.length) continue;
+    const titles = [...new Set(completed.flatMap(entry => entry.cardId && knowledgeCards[entry.cardId] ? [knowledgeCards[entry.cardId].title] : []))];
+    sentences.push(`${titles.length ? activity.received + titles.map(title => `《${title}》`).join('、') : activity.done}。`);
   }
-  const focus = entries.filter(entry => entry.kind === 'focus').reduce((sum, entry) => sum + (entry.durationMinutes ?? 0), 0);
-  sentences.add(`今日专注 ${Number(focus.toFixed(1))} 分钟。`);
-  const meditation = entries.filter(entry => entry.kind === 'meditation').reduce((sum, entry) => sum + (entry.durationMinutes ?? 0), 0);
-  if (meditation) sentences.add(`静坐冥想 ${Number(meditation.toFixed(1))} 分钟。`);
-  const health: Partial<Record<MemoryActivity, string>> = {
-    'legacy-breakfast': '与小精灵共进早饭。', breakfast: '与银钩共度晨读时光。', lunch: '与银钩共进朝食。', dinner: '与银钩共进夕食。',
-    outdoors: '出门走走，赴一场风与树的约。', sleep: '完成一次安寝约定。', meal: '好好吃过一餐。',
-  };
-  for (const entry of entries) {
-    const activity = memoryActivity(entry);
-    const sentence = activity === 'sleep' && entry.kind === 'meditation' ? '睡前静坐已毕。' : health[activity];
-    if (sentence) sentences.add(sentence);
-    if (entry.kind === 'adventure') {
-      const title = /^完成李宅异闻(?:录)?$/.test(entry.title) ? '完成一次冒险' : entry.title;
-      sentences.add(`${title.replace(/[。！？!?]+$/, '')}。`);
-    }
-  }
-  return [...sentences];
+  const chapters = [...new Set(entries.flatMap(entry => entry.chapterTitle ? [entry.chapterTitle] : []))];
+  if (chapters.length) sentences.push(`进入${chapters.map(title => `《${title}》`).join('、')}冒险。`);
+  else if (entries.some(entry => entry.kind === 'adventure')) sentences.push('进入《李宅异闻》冒险。');
+  return sentences;
 }
 
 const lunarFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', { year: 'numeric', month: 'long', day: 'numeric' });

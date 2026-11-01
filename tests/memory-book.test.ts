@@ -21,7 +21,7 @@ describe('黄历记忆本', () => {
     expect(book.filter(record => record.cardId)).toEqual([records[0]]);
     expect(book.map(({ cardId: _cardId, ...record }) => record)).toEqual(records.map(({ cardId: _cardId, ...record }) => record));
     expect(memoryColumns(book).flatMap(column => column.photoIds)).toEqual(['old-photo', 'latest-photo']);
-    expect(memorySentences(book)).toContain('今日专注 90 分钟。');
+    expect(memorySentences(book)).toContain('专注总时长 90 分钟。');
     expect(memorySentences(book).some(sentence => sentence.includes('缠丝玛瑙'))).toBe(false);
     expect(JSON.stringify(records)).toBe(before);
   });
@@ -70,22 +70,61 @@ describe('黄历记忆本', () => {
     expect(JSON.stringify(records)).toBe(before);
   });
 
-  it('保留真实专注时长，合并重复知识与健康记录，不把睡眠计入专注', () => {
+  it('汇总专注时长并合并重复活动，只引用卡片标题，不把睡眠计入专注', () => {
     const sentences = memorySentences([
       entry({ id: 'first', activityId: 'lunch', cardId: 'meal', durationMinutes: 30 }),
       entry({ id: 'second', activityId: 'lunch', cardId: 'meal', durationMinutes: 60 }),
       entry({ id: 'rest', kind: 'sleep', activityId: 'sleep', durationMinutes: 360 }),
     ]);
-    expect(sentences).toContain('今日专注 90 分钟。');
-    expect(sentences.filter(sentence => sentence === '与银钩共进朝食。')).toHaveLength(1);
-    expect(sentences.filter(sentence => sentence.includes('食谱卡'))).toHaveLength(1);
-    expect(sentences.every(sentence => (sentence.match(/[。！？!?]/g) ?? []).length === 1)).toBe(true);
+    expect(sentences).toEqual(['专注总时长 90 分钟。', '与银钩一起品尝了《一餐一味》。', '与银钩一起早早入眠。']);
   });
 
   it('睡前冥想不会被当成已经完成睡眠', () => {
     const sentences = memorySentences([entry({ kind: 'meditation', activityId: 'sleep', durationMinutes: 10 })]);
-    expect(sentences).toContain('睡前静坐已毕。');
-    expect(sentences).not.toContain('完成一次安寝约定。');
+    expect(sentences).toEqual(['专注总时长 10 分钟。']);
+  });
+
+  it('摘要固定为六类信息，按顺序只列已完成项，不增加夕食或卡片全文', () => {
+    const records = [
+      entry({ id: 'sleep', kind: 'sleep', activityId: 'sleep' }),
+      entry({ id: 'outdoors', kind: 'outdoors', activityId: 'outdoors' }),
+      entry({ id: 'dinner', activityId: 'dinner', cardId: 'evening-rice', durationMinutes: 30 }),
+      entry({ id: 'lunch', kind: 'meal', activityId: 'lunch' }),
+      entry({ id: 'reading', activityId: 'breakfast', durationMinutes: 30 }),
+      entry({ id: 'meditation', kind: 'meditation', durationMinutes: 10 }),
+    ];
+    expect(memorySentences(memoriesForBook(records, false, [{ date: '2026-10-31', act: 0, timestamp: 1 }]))).toEqual([
+      '专注总时长 70 分钟。', '与银钩一起晨读。', '与银钩一起朝食。', '与银钩一起外出。', '与银钩一起早早入眠。', '进入《东郭火迹》冒险。',
+    ]);
+    expect(memorySentences([])).toEqual(['专注总时长 0 分钟。']);
+    expect(memorySentences(records.filter(record => record.id === 'outdoors'))).toEqual(['专注总时长 0 分钟。', '与银钩一起外出。']);
+  });
+
+  it('收到卡片后用完整原题替换该项摘要，示例模式仅引用当前保留的卡片', () => {
+    const records = [
+      entry({ id: 'reading', activityId: 'breakfast', cardId: 'reading-leaves', timestamp: 1 }),
+      entry({ id: 'lunch', activityId: 'lunch', cardId: 'morning-bamboo', timestamp: 2 }),
+      entry({ id: 'outdoors', activityId: 'outdoors', cardId: 'outdoors-agate-cup', timestamp: 3 }),
+      entry({ id: 'sleep', activityId: 'sleep', cardId: 'sleep-moon', timestamp: 4 }),
+    ];
+    expect(memorySentences(records)).toEqual([
+      '专注总时长 0 分钟。', '与银钩一起阅读了《贝叶书》。', '与银钩一起品尝了《雨后新笋》。',
+      '银钩外出并遇到了《这只兽嘴，竟是杯子的出酒口》。', '与银钩一起早睡并进入梦境《月光入扉》。',
+    ]);
+    expect(memorySentences(memoriesForBook(records, true))).toEqual([
+      '专注总时长 0 分钟。', '与银钩一起晨读。', '与银钩一起朝食。', '与银钩一起外出。', '与银钩一起早睡并进入梦境《月光入扉》。',
+    ]);
+  });
+
+  it('冒险章节按进入日期归入日历，同日的章节合并成一条', () => {
+    const book = memoriesForBook([], true, [
+      { date: '2026-10-31', act: 0, timestamp: 1 },
+      { date: '2026-10-31', act: 1, timestamp: 2 },
+      { date: '2026-11-01', act: 2, timestamp: 3 },
+    ]);
+    expect(memorySentences(book.filter(record => record.date === '2026-10-31'))).toEqual(['专注总时长 0 分钟。', '进入《东郭火迹》、《阿万报书》冒险。']);
+    expect(memorySentences(book.filter(record => record.date === '2026-11-01'))).toEqual(['专注总时长 0 分钟。', '进入《伐竹得书》冒险。']);
+    expect(book.every(record => record.rods === 0 && !record.cardId)).toBe(true);
   });
 
   it('新增记录保留原活动归属，同时不改变任务结算', () => {
@@ -97,17 +136,15 @@ describe('黄历记忆本', () => {
     const photo = reduceGame(createInitialState(), { type: 'completePhoto', activityId: 'outdoors', photoId: 'test:photo' }, new Date(2026, 9, 31, 16).getTime());
     expect(photo.memories[0]).toMatchObject({ activityId: 'outdoors', photoId: 'test:photo' });
   });
-  it('新知识卡中的诗句引号保持完整，不拆出孤立的右引号', () => {
+  it('卡片诗句与正文不再展开在摘要中', () => {
     const sentences = memorySentences([entry({ cardId: 'sleep-moon', activityId: 'sleep' })]);
-    expect(sentences).toContain('“清月出岭光入扉。”');
-    expect(sentences.some(sentence => sentence.startsWith('”'))).toBe(false);
+    expect(sentences).toEqual(['专注总时长 0 分钟。', '与银钩一起早睡并进入梦境《月光入扉》。']);
   });
 
   it('旧早餐记录仍表示早饭，不会随晨间任务改成晨读', () => {
     const old = entry({ title: '好好吃早餐', activityId: 'breakfast', photoId: 'old-breakfast' });
     expect(memoryActivity(old)).toBe('legacy-breakfast');
-    expect(memorySentences([old])).toContain('与小精灵共进早饭。');
-    expect(memorySentences([old])).not.toContain('与银钩共度晨读时光。');
+    expect(memorySentences([old])).toEqual(['专注总时长 0 分钟。']);
     expect(memoryActivity(entry({ title: '与银钩晨读', activityId: 'breakfast' }))).toBe('breakfast');
   });
 
