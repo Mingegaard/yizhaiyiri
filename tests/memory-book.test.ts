@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calendarCells, lunarDate, memoryActivity, memoryColumns, memorySentences } from '../src/game/memoryBook';
+import { calendarCells, lunarDate, memoriesForBook, memoryActivity, memoryColumns, memorySentences } from '../src/game/memoryBook';
 import { createInitialState, FOCUS_DURATION_MS, reduceGame } from '../src/game/engine';
 import type { MemoryEntry } from '../src/game/types';
 
@@ -9,6 +9,30 @@ const entry = (overrides: Partial<MemoryEntry> = {}): MemoryEntry => ({
 });
 
 describe('黄历记忆本', () => {
+  it('演示记忆本跨日期只保留最新卡片，照片、时长和奖励历史不变', () => {
+    const records = [
+      entry({ id: 'newest', date: '2026-11-01', timestamp: 300, activityId: 'outdoors', cardId: 'outdoors-camel-musicians', photoId: 'latest-photo', durationMinutes: 30 }),
+      entry({ id: 'older', timestamp: 100, activityId: 'outdoors', cardId: 'outdoors-agate-cup', photoId: 'old-photo', durationMinutes: 30 }),
+      entry({ id: 'middle', timestamp: 200, activityId: 'lunch', cardId: 'meal' }),
+      entry({ id: 'no-card', timestamp: 400, durationMinutes: 30 }),
+    ];
+    const before = JSON.stringify(records);
+    const book = memoriesForBook(records, true);
+    expect(book.filter(record => record.cardId)).toEqual([records[0]]);
+    expect(book.map(({ cardId: _cardId, ...record }) => record)).toEqual(records.map(({ cardId: _cardId, ...record }) => record));
+    expect(memoryColumns(book).flatMap(column => column.photoIds)).toEqual(['old-photo', 'latest-photo']);
+    expect(memorySentences(book)).toContain('今日专注 90 分钟。');
+    expect(memorySentences(book).some(sentence => sentence.includes('缠丝玛瑙'))).toBe(false);
+    expect(JSON.stringify(records)).toBe(before);
+  });
+
+  it('正式模式保留所有卡片，演示模式相同时间的奖励取最后收下的那张', () => {
+    const records = [entry({ id: 'first', cardId: 'outdoors-agate-cup' }), entry({ id: 'last', cardId: 'outdoors-dancing-horse' })];
+    expect(memoriesForBook(records, false)).toBe(records);
+    expect(memoriesForBook(records, true).filter(record => record.cardId)).toEqual([records[1]]);
+    expect(memoriesForBook([], true)).toEqual([]);
+  });
+
   it('十月从星期四开始，日期完整且星期列保持对齐', () => {
     const cells = calendarCells(2026, 9);
     expect(cells.slice(0, 4)).toEqual([null, null, null, '2026-10-01']);

@@ -9,6 +9,21 @@ export const memoryActivityLabels: Record<MemoryActivity, string> = {
   'legacy-breakfast': '早饭', meal: '饮食', adventure: '冒险', other: '日常',
 };
 
+/** Demo books keep only the newest card; reward history still drives the card pool. */
+export function memoriesForBook(memories: MemoryEntry[], demo: boolean): MemoryEntry[] {
+  if (!demo) return memories;
+  let latest: MemoryEntry | undefined;
+  for (const entry of memories) {
+    if (entry.cardId && (!latest || entry.timestamp >= latest.timestamp)) latest = entry;
+  }
+  if (!latest) return memories;
+  return memories.map(entry => {
+    if (!entry.cardId || entry === latest) return entry;
+    const { cardId: _cardId, ...record } = entry;
+    return record;
+  });
+}
+
 /** Older saves lack activityId; recover only what the original record actually identifies. */
 export function memoryActivity(entry: MemoryEntry): MemoryActivity {
   // Keep old breakfast memories truthful after the morning slot became reading.

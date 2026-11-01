@@ -4,7 +4,7 @@ import type { MemoryEntry } from '../game/types';
 import { localDay } from '../game/engine';
 import { photoBlob } from '../game/storage';
 import { cardImageUrl, knowledgeCards } from '../content/cards';
-import { calendarCells, lunarDate, memoryActivity, memoryActivityLabels, memoryColumns, memorySentences } from '../game/memoryBook';
+import { calendarCells, lunarDate, memoriesForBook, memoryActivity, memoryActivityLabels, memoryColumns, memorySentences } from '../game/memoryBook';
 import { HealthyKnowledge } from './HealthyKnowledge';
 import './book.css';
 
@@ -124,7 +124,8 @@ export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: 
   const [selectedDate, setSelectedDate] = useState(today);
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const heading = useRef<HTMLHeadingElement>(null);
-  const entries = useMemo(() => memories.filter(entry => entry.date === selectedDate).sort((a, b) => a.timestamp - b.timestamp), [memories, selectedDate]);
+  const bookMemories = useMemo(() => memoriesForBook(memories, demo), [memories, demo]);
+  const entries = useMemo(() => bookMemories.filter(entry => entry.date === selectedDate).sort((a, b) => a.timestamp - b.timestamp), [bookMemories, selectedDate]);
   const sentences = useMemo(() => memorySentences(entries), [entries]);
   const selected = dateFromKey(selectedDate);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, [view, openedCardId]);
@@ -151,6 +152,6 @@ export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: 
         <ul className="almanac-sentences" aria-label="这一日的记录">{sentences.map(sentence => <li key={sentence}>{sentence}</li>)}</ul>
         <CalendarWheel onClick={openCalendar}/>
       </div>
-    </> : <CalendarPage month={month} selectedDate={selectedDate} today={today} memories={memories} entries={entries} demo={demo} onMonthChange={setMonth} onSelect={setSelectedDate} onOpen={() => setView('day')} onOpenCard={setOpenedCardId}/>}
+    </> : <CalendarPage month={month} selectedDate={selectedDate} today={today} memories={bookMemories} entries={entries} demo={demo} onMonthChange={setMonth} onSelect={setSelectedDate} onOpen={() => setView('day')} onOpenCard={setOpenedCardId}/>}
   </section>;
 }
