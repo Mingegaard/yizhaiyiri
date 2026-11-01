@@ -31,10 +31,13 @@ describe('walking camera presentation', () => {
       heights.push(camera.lift);
     }
     expect(camera.weight).toBeGreaterThan(.99);
-    expect(Math.max(...heights) - Math.min(...heights)).toBeGreaterThan(.04);
+    const heightRange = Math.max(...heights) - Math.min(...heights);
+    expect(heightRange).toBeGreaterThan(.014);
+    expect(heightRange).toBeLessThan(.022);
+    expect(Math.abs(camera.side)).toBeLessThan(.002);
     const phase = camera.stepPhase;
-    for (let frame = 0; frame < 60; frame++) advanceWalkingCamera(camera, ground, look, 1 / 60);
-    expect(camera.weight).toBeLessThan(.001);
+    for (let frame = 0; frame < 12; frame++) advanceWalkingCamera(camera, ground, look, 1 / 60);
+    expect(camera.weight).toBeLessThan(.02);
     expect(camera.stepPhase).toBe(phase);
     expect(Math.abs(camera.side)).toBeLessThan(.00002);
 
@@ -92,6 +95,8 @@ describe('walking camera presentation', () => {
     expect(camera.floor).toBeLessThan(.272);
     expect(camera.yaw).toBeGreaterThan(0);
     expect(camera.yaw).toBeLessThan(.2);
+    for (let frame = 0; frame < 5; frame++) advanceWalkingCamera(camera, step, { yaw: .2, pitch: .1 }, 1 / 60);
+    expect(Math.abs(camera.yaw - .2)).toBeLessThan(.005);
     for (let frame = 0; frame < 30; frame++) advanceWalkingCamera(camera, step, { yaw: .2, pitch: .1 }, 1 / 60);
     expect(camera.floor).toBeCloseTo(.272, 3);
     expect(step).toEqual([0, .272, 6.95]);

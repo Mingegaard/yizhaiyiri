@@ -50,17 +50,18 @@ export function advanceWalkingCamera(
   if (paused || delta <= 0) return;
   const dt = Math.min(delta, .05);
   const walking = Math.min(1, distance / dt / 3.3);
-  state.weight = damp(state.weight, walking, walking > state.weight ? 9 : 7, dt);
-  state.stepPhase = (state.stepPhase + distance * Math.PI * 2 / 1.5) % (Math.PI * 4);
+  state.weight = damp(state.weight, walking, walking > state.weight ? 16 : 22, dt);
+  state.stepPhase = (state.stepPhase + distance * Math.PI * 2 / 1.35) % (Math.PI * 4);
   state.breathPhase = (state.breathPhase + dt * Math.PI * 2 / 4.8) % (Math.PI * 2);
-  const breath = Math.sin(state.breathPhase) * (1 - .65 * state.weight);
-  state.side = Math.sin(state.stepPhase / 2) * .012 * state.weight;
-  state.lift = Math.sin(state.stepPhase) * .024 * state.weight + breath * .006;
-  state.nod = Math.sin(state.stepPhase) * .0015 * state.weight + breath * .0006;
-  // Short damping softens mouse/trackpad steps without adding inertia to the player.
-  state.yaw = damp(state.yaw, look.yaw, 22, dt);
-  state.pitch = damp(state.pitch, look.pitch, 22, dt);
-  state.floor = damp(state.floor, ground[1], 14, dt);
+  const breath = Math.sin(state.breathPhase) * (1 - .85 * state.weight);
+  // A small, quick footfall keeps the horizon quiet; avoid the slow side-to-side sway.
+  state.side = Math.sin(state.stepPhase / 2) * .0015 * state.weight;
+  state.lift = Math.sin(state.stepPhase) * .009 * state.weight + breath * .006;
+  state.nod = Math.sin(state.stepPhase) * .0002 * state.weight + breath * .0006;
+  // Keep gaze responsive while taking the edge off individual input events.
+  state.yaw = damp(state.yaw, look.yaw, 38, dt);
+  state.pitch = damp(state.pitch, look.pitch, 38, dt);
+  state.floor = damp(state.floor, ground[1], 18, dt);
 }
 
 export function walkingCameraPose(state: WalkingCamera, ground: Vec3) {
