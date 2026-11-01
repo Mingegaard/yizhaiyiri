@@ -9,7 +9,7 @@ const entry = (overrides: Partial<MemoryEntry> = {}): MemoryEntry => ({
 });
 
 describe('黄历记忆本', () => {
-  it('演示记忆本跨日期只保留最新卡片，照片、时长和奖励历史不变', () => {
+  it('演示记忆本跨日期只保留最新卡片与该活动最新照片，时长和奖励历史不变', () => {
     const records = [
       entry({ id: 'newest', date: '2026-11-01', timestamp: 300, activityId: 'outdoors', cardId: 'outdoors-camel-musicians', photoId: 'latest-photo', durationMinutes: 30 }),
       entry({ id: 'older', timestamp: 100, activityId: 'outdoors', cardId: 'outdoors-agate-cup', photoId: 'old-photo', durationMinutes: 30 }),
@@ -19,8 +19,8 @@ describe('黄历记忆本', () => {
     const before = JSON.stringify(records);
     const book = memoriesForBook(records, true);
     expect(book.filter(record => record.cardId)).toEqual([records[0]]);
-    expect(book.map(({ cardId: _cardId, ...record }) => record)).toEqual(records.map(({ cardId: _cardId, ...record }) => record));
-    expect(memoryColumns(book).flatMap(column => column.photoIds)).toEqual(['old-photo', 'latest-photo']);
+    expect(book.map(({ cardId: _cardId, photoId: _photoId, ...record }) => record)).toEqual(records.map(({ cardId: _cardId, photoId: _photoId, ...record }) => record));
+    expect(memoryColumns(book).flatMap(column => column.photoIds)).toEqual(['latest-photo']);
     expect(memorySentences(book)).toContain('专注总时长 90 分钟。');
     expect(memorySentences(book).some(sentence => sentence.includes('缠丝玛瑙'))).toBe(false);
     expect(JSON.stringify(records)).toBe(before);
@@ -31,6 +31,36 @@ describe('黄历记忆本', () => {
     expect(memoriesForBook(records, false)).toBe(records);
     expect(memoriesForBook(records, true).filter(record => record.cardId)).toEqual([records[1]]);
     expect(memoriesForBook([], true)).toEqual([]);
+  });
+
+  it('没有卡片也按五种活动分别保留最新照片，之后的专注记录不会移除照片', () => {
+    const activities = ['breakfast', 'lunch', 'outdoors', 'dinner', 'sleep'] as const;
+    const records = activities.flatMap(activityId => [
+      entry({ id: `${activityId}:new`, activityId, timestamp: 20, photoId: `${activityId}:new` }),
+      entry({ id: `${activityId}:old`, activityId, date: '2026-10-30', timestamp: 10, photoId: `${activityId}:old` }),
+      entry({ id: `${activityId}:focus`, activityId, timestamp: 30, durationMinutes: 30 }),
+    ]);
+    const before = JSON.stringify(records);
+    const book = memoriesForBook(records, true);
+    expect(book.filter(record => record.photoId).map(record => record.photoId)).toEqual(activities.map(id => `${id}:new`));
+    expect(book.filter(record => record.date === '2026-10-30').every(record => !record.photoId)).toBe(true);
+    expect(book).toHaveLength(records.length);
+    expect(memorySentences(book)[0]).toBe('专注总时长 150 分钟。');
+    expect(memoriesForBook(records, false)).toBe(records);
+    expect(records.filter(record => record.photoId)).toHaveLength(10);
+    expect(JSON.stringify(records)).toBe(before);
+  });
+
+  it('卡片与照片分别取最新，同时间照片取最后上传的那张', () => {
+    const records = [
+      entry({ id: 'card', activityId: 'outdoors', timestamp: 10, photoId: 'old-photo', cardId: 'outdoors-agate-cup' }),
+      entry({ id: 'first-photo', activityId: 'outdoors', timestamp: 20, photoId: 'first-photo' }),
+      entry({ id: 'last-photo', activityId: 'outdoors', timestamp: 20, photoId: 'last-photo' }),
+    ];
+    const book = memoriesForBook(records, true);
+    expect(book.filter(record => record.cardId).map(record => record.cardId)).toEqual(['outdoors-agate-cup']);
+    expect(book.filter(record => record.photoId).map(record => record.photoId)).toEqual(['last-photo']);
+    expect(memoryColumns(book)).toEqual([{ activity: 'outdoors', cardId: 'outdoors-agate-cup', photoIds: ['last-photo'] }]);
   });
 
   it('十月从星期四开始，日期完整且星期列保持对齐', () => {

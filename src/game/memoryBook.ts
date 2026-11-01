@@ -10,7 +10,7 @@ export const memoryActivityLabels: Record<MemoryActivity, string> = {
   'legacy-breakfast': '早饭', meal: '饮食', adventure: '冒险', other: '日常',
 };
 
-/** Demo books keep only the newest card; reward history still drives the card pool. */
+/** Demo books keep the newest card and one photo per activity, preserving reward history. */
 export function memoriesForBook(memories: MemoryEntry[], demo: boolean, visits: StoryProgress['chapterVisits'] = []): MemoryEntry[] {
   if (visits.length) memories = [...memories, ...visits.flatMap(visit => {
     const chapterTitle = CHAPTERS[visit.act]?.replace(/^\S+\s+/, '');
@@ -19,13 +19,22 @@ export function memoriesForBook(memories: MemoryEntry[], demo: boolean, visits: 
   })];
   if (!demo) return memories;
   let latest: MemoryEntry | undefined;
+  const latestPhotos = new Map<MemoryActivity, MemoryEntry>();
   for (const entry of memories) {
     if (entry.cardId && (!latest || entry.timestamp >= latest.timestamp)) latest = entry;
+    if (entry.photoId) {
+      const activity = memoryActivity(entry);
+      const previous = latestPhotos.get(activity);
+      if (!previous || entry.timestamp >= previous.timestamp) latestPhotos.set(activity, entry);
+    }
   }
-  if (!latest) return memories;
   return memories.map(entry => {
-    if (!entry.cardId || entry === latest) return entry;
-    const { cardId: _cardId, ...record } = entry;
+    const hideCard = !!entry.cardId && entry !== latest;
+    const hidePhoto = !!entry.photoId && entry !== latestPhotos.get(memoryActivity(entry));
+    if (!hideCard && !hidePhoto) return entry;
+    const record = { ...entry };
+    if (hideCard) delete record.cardId;
+    if (hidePhoto) delete record.photoId;
     return record;
   });
 }
