@@ -32,13 +32,12 @@ export const LETTER_TEXT: Record<string,string> = {
 'a5-letter':'谚所谓‘一鸡死，一鸡鸣’。吾属百户，当相报耳。',
 'a6-letter':'闻君欲徙居，吾已先至其所矣。',
 'a6-dogs-letter':'自无韩大猛二，吾属无依。',
-'a7-confession':'若干物已货讫，得钱若干；买果子及梳子等食讫，其余若干，并送还。',
+'a7-confession':'所取之物中，有些已经卖掉，换得一些钱；又用这些钱买了果子、梳子等物，已经吃用；其余物品，现在全部送还。\n\n丢失的铛子，我其实没有拿，请到水边查验。\n\n具状人：孤腾腞等。',
 'a7-last':'失铛子，其实不取，请问诸水滨。',
 };
 
 LETTER_TEXT['neighbor-letter']='里仁为美，择不处仁，焉得智？';
 LETTER_TEXT['wei-letter']='符至圣也，而置之屋上，不亦轻为。';
-LETTER_TEXT['a7-confession']='若干物已货讫，得钱若干；买果子及梳子等食讫，其余若干，并送还。\n\n失铛子，其实不取，请问诸水滨。\n\n状言孤腾腞等状。';
 
 LETTER_TEXT['a3-defense']='刘长卿诗曰：“直氏偷金枉，君谓我为盗。”今既得盗，如之何？';
 LETTER_TEXT['a5-letter']='谚所谓“一鸡死，一鸡鸣”。吾属百户，当相报耳。';
