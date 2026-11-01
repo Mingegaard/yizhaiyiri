@@ -259,7 +259,7 @@ function SceneWorld(props: SceneCanvasProps) {
     {props.storyView && props.storyNodeId ? <StoryInteraction view={props.storyView} nodeId={props.storyNodeId} label={props.storyActionLabel ?? '查看物件'} blocked={props.blocked} onInteract={props.onStoryInteract} /> : null}
     {props.retainedStoryProps?.filter(item => !props.storyView || item.view.prop !== props.storyView.prop || storyTarget(item.nodeId).join() !== storyTarget(props.storyNodeId!).join()).map(item => <StoryInteraction key={item.nodeId} view={item.view} nodeId={item.nodeId} label="" blocked passive/>)}
     {showElf ? <group position={elfPosition} rotation={props.elfState === 'sleeping' && !props.celebrating ? [-Math.PI / 2, 0, 0] : [0, 0, 0]}>
-      <CourtyardCompanion state={props.celebrating ? 'idle' : props.elfState} celebrating={props.celebrating} />
+      <CourtyardCompanion state={props.celebrating ? 'idle' : props.elfState} celebrating={props.celebrating} study={props.sceneId === 'courtyard' && props.healthActivityId === 'breakfast'} />
     </group> : null}
     {!props.focusView && !props.overview && !props.storyNodeId ? <DoorMarkers definition={definition} night={props.night} /> : null}
     <Navigation key={props.sceneId} {...props} definition={definition} poses={walkingPoses} />

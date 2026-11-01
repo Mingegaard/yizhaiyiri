@@ -3,8 +3,9 @@ import { useFrame } from '@react-three/fiber';
 import type { Group } from 'three';
 import { cookingElfAsset, elfAsset, roomFurniture, sceneAssets, studyDaybedAsset, studyWritingTableAsset } from '../content/assets';
 import { CourtyardSigns } from './CourtyardSigns';
-import { ModelAsset } from './ModelAsset';
+import { AssetBoundary, ModelAsset } from './ModelAsset';
 import { StudyFoldingScreen } from './StudyFoldingScreen';
+import { StudySilverHook } from './StudySilverHook';
 import type { ElfState, SceneId } from './types';
 
 export function TangEnvironment({ sceneId, furniture = true }: { sceneId: SceneId; furniture?: boolean }) {
@@ -17,13 +18,15 @@ export function TangEnvironment({ sceneId, furniture = true }: { sceneId: SceneI
     {sceneId !== 'courtyard' && furniture ? <ModelAsset asset={roomFurniture[sceneId]} /> : null}
   </>;
 }
-export function CourtyardCompanion({ state, celebrating = false }: { state: ElfState; celebrating?: boolean }) {
+export function CourtyardCompanion({ state, celebrating = false, study = false }: { state: ElfState; celebrating?: boolean; study?: boolean }) {
   const group = useRef<Group>(null);
   useFrame(({ clock }) => {
     if (!group.current || state === 'sleeping') return;
-    group.current.position.y = celebrating ? .045 + Math.abs(Math.sin(clock.elapsedTime * 5.5)) * .34 : .045 + Math.sin(clock.elapsedTime * 1.4) * .035;
+    group.current.position.y = celebrating ? .045 + Math.abs(Math.sin(clock.elapsedTime * 5.5)) * .34 : study ? 0 : .045 + Math.sin(clock.elapsedTime * 1.4) * .035;
     group.current.rotation.z = celebrating ? Math.sin(clock.elapsedTime * 5.5) * .08 : 0;
-    group.current.rotation.y = Math.sin(clock.elapsedTime * .55) * .10;
+    group.current.rotation.y = study ? 0 : Math.sin(clock.elapsedTime * .55) * .10;
   });
-  return <group ref={group}><ModelAsset asset={state === 'cooking' ? cookingElfAsset : elfAsset}/></group>;
+  return <group ref={group}>{study
+    ? <AssetBoundary fallback={null}><Suspense fallback={null}><StudySilverHook /></Suspense></AssetBoundary>
+    : <ModelAsset asset={state === 'cooking' ? cookingElfAsset : elfAsset}/>}</group>;
 }

@@ -1,0 +1,47 @@
+{
+  "asset": "silverhook-study-idle.glb",
+  "scope": "Study companion during morning reading, including focus and celebration. Kitchen/sleep/outdoors companion assets remain unchanged.",
+  "input": {
+    "filename": "glb.glb",
+    "sha256": "4dc87172650bd17f94a00f9f6158878d274632edb010a56d5341c18c7b2eb432",
+    "providedBy": "user"
+  },
+  "provider": "Aholo Lux3D",
+  "region": "cn",
+  "rig": {
+    "taskId": "4544962",
+    "providerStatus": 3,
+    "sha256": "f129437d9b1a91a23df7f95e403097d74d55333bd4830c50ad495253e96e7ade",
+    "jointCount": 52
+  },
+  "animation": {
+    "taskId": "4545172",
+    "providerStatus": 3,
+    "actionId": "Idle_Loop",
+    "actionStatus": "success",
+    "animateInPlace": true,
+    "sourceSha256": "03f4ed619fdabc102291ddcea7a02330d46cc1a7c3a4dcac85797ece57e65614",
+    "clipName": "animation_1",
+    "clipSeconds": 2.5416666666666665
+  },
+  "localAdaptations": [
+    "Grounded posed character at approximately 1.25m height",
+    "Neutral wrists/fingers preserve the supplied joined hands instead of clenched fists",
+    "Cuff weights on the forearm side of each wrist are reassigned from hand/finger joints to forearm; positions/UVs unchanged",
+    "Unused metallic/roughness image removed",
+    "Runtime unlit desaturated pigment, warm paper highlights and skinned ink silhouette"
+  ],
+  "output": {
+    "sha256": "01ddd7ff678b4ca844c5ff348004a0efed5786cdf70ad1369c6e968147a1f3bd",
+    "bytes": 7235524,
+    "skinJoints": 52,
+    "animationChannels": 156,
+    "weightSumRange": [
+      0.9999998896382749,
+      1.0000001029111445
+    ],
+    "blend": "art-source/silverhook-study.blend",
+    "rebuild": "art-source/build_silverhook.py"
+  },
+  "verifiedAt": "2026-11-01T03:23:48.109566+00:00"
+}

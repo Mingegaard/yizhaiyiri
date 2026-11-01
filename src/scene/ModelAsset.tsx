@@ -29,7 +29,7 @@ export function AssetLoading() {
   if (!active && !errors.length) return null;
   return <div className="asset-loading-overlay" role="status"><div className="asset-loading"><span>宅</span><p>{errors.length ? '画卷未能展开，请刷新重试' : '展开庭院画卷'}</p><small>{errors.length ? '' : `${Math.round(progress)}%`}</small></div></div>;
 }
-class AssetBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { failed: boolean }> {
+export class AssetBoundary extends Component<{ children: ReactNode; fallback: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
   render() { return this.state.failed ? null : this.props.children; }
