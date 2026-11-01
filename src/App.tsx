@@ -45,6 +45,7 @@ export default function App() {
   const [message, setMessage] = useState('');
   const [preview, setPreview] = useState<{ file: File; url: string; activityId: ActivityId } | null>(null);
   const [period, setPeriod] = useState(() => demo ? (localStorage.getItem('yizhaiyiri-demo-period') ?? 'real') : 'real');
+  const [outdoorsDemoReady, setOutdoorsDemoReady] = useState(false);
   const inputRef = useRef<MovementInput>({ forward: 0, right: 0, turn: 0 });
   const uploadRef = useRef<HTMLInputElement>(null);
   const photoActivityRef = useRef<ActivityId | null>(null);
@@ -123,6 +124,12 @@ export default function App() {
     if ((panel === 'activity' || panel === 'health-action') && (!availableActivity || previousActivity.current !== availableActivity.id)) setPanel(null);
     previousActivity.current = availableActivity?.id;
   }, [availableActivity?.id, panel]);
+  useEffect(() => {
+    if (outdoorsDemoReady && availableActivity?.id === 'outdoors') {
+      setOutdoorsDemoReady(false);
+      setPanel('health-action');
+    }
+  }, [outdoorsDemoReady, availableActivity?.id]);
   useEffect(() => {
     if (!celebration) return;
     setPanel(null);
@@ -229,6 +236,17 @@ export default function App() {
     if (demo) url.searchParams.delete('demo'); else url.searchParams.set('demo', '1');
     location.href = url.toString();
   };
+  async function prepareOutdoorsDemo() {
+    if (!demo || occupied || busy) return;
+    if (await command({ type: 'demoOutdoors' })) {
+      localStorage.setItem('yizhaiyiri-demo-period', '16');
+      setPeriod('16');
+      setSceneId('courtyard');
+      setOverview(false);
+      setPanel(null);
+      setOutdoorsDemoReady(true);
+    }
+  }
   const viewingOverview = overview && !occupied && !vesselTransition;
   const renderedSceneId: SceneId = viewingOverview ? 'courtyard' : healthyScene && (state.session?.activityId || celebration) ? healthyScene : meditationEntry || state.session?.retreat ? 'courtyard' : sceneId;
   if (!ready) return <div className="boot-screen"><span className="brand-seal">宅</span><p>打开今日的庭院…</p></div>;
@@ -286,7 +304,7 @@ export default function App() {
     {panel === 'memory' ? <Modal title="记忆本" wide className="memory-modal" onClose={() => setPanel(null)}><MemoryBook memories={state.memories} demo={demo}/></Modal> : null}
     {panel === 'vessel' ? <Modal title="金银筒" className="vessel-modal" showClose={false} onClose={() => !busy && setPanel(null)}><VesselInvitation rods={state.rods} busy={busy} onEnter={() => void enterVessel()} onReturn={() => setPanel(null)}/></Modal> : null}
     {panel === 'help' ? <Modal title="玩法说明" onClose={() => setPanel(null)}><HelpPanel onClose={() => setPanel(null)}/></Modal> : null}
-    {panel === 'settings' ? <Modal title="设置与演示" onClose={() => setPanel(null)}><SettingsPanel demo={demo} period={period} busy={busy} onSwitchDemo={switchDemo} onPeriodChange={value => { setPeriod(value); localStorage.setItem('yizhaiyiri-demo-period', value); }} onSetDemoRods={() => void command({ type: 'demoRods' })}/></Modal> : null}
+    {panel === 'settings' ? <Modal title="设置与演示" onClose={() => setPanel(null)}><SettingsPanel demo={demo} period={period} busy={busy} onSwitchDemo={switchDemo} onPeriodChange={value => { setPeriod(value); localStorage.setItem('yizhaiyiri-demo-period', value); }} onSetDemoRods={() => void command({ type: 'demoRods' })} outdoorsDemoBlocked={occupied} onDemoOutdoors={prepareOutdoorsDemo}/></Modal> : null}
     {preview ? <Modal title="留住这一刻" onClose={() => !busy && setPreview(null)}><PhotoPreview url={preview.url} busy={busy} onSubmit={() => void submitPhoto()}/></Modal> : null}
   </main>;
 }

@@ -23,7 +23,7 @@ export function useGame(demo: boolean) {
 
   const dispatch = useCallback(async (command: GameCommand) => {
     try {
-      if (!demo && command.type === 'demoRods') throw new Error('演示算筹只能在演示模式中使用。');
+      if (!demo && (command.type === 'demoRods' || command.type === 'demoOutdoors')) throw new Error('演示操作只能在演示模式中使用。');
       // Daybed sitting and life tasks share the original desk timer durations.
       let action = command;
       if (!demo && command.type === 'beginSleep') action = { ...command, durationMs: FOCUS_DURATION_MS };

@@ -29,9 +29,11 @@ export interface SettingsPanelProps {
   onSwitchDemo: () => void;
   onPeriodChange: (period: string) => void;
   onSetDemoRods: () => void | Promise<void>;
+  outdoorsDemoBlocked: boolean;
+  onDemoOutdoors: () => void | Promise<void>;
 }
 
-export function SettingsPanel({ demo, period, busy, onSwitchDemo, onPeriodChange, onSetDemoRods }: SettingsPanelProps) {
+export function SettingsPanel({ demo, period, busy, onSwitchDemo, onPeriodChange, onSetDemoRods, outdoorsDemoBlocked, onDemoOutdoors }: SettingsPanelProps) {
   return <div className="prose-panel">
     <span className="dialog-icon"><Settings2/></span>
     <h2>让一天，按你的节奏展开。</h2>
@@ -48,6 +50,7 @@ export function SettingsPanel({ demo, period, busy, onSwitchDemo, onPeriodChange
         <option value="23">就寝 · 23:00</option>
         <option value="10">闲时 · 10:00</option>
       </select>
+      <button className="primary full" disabled={busy || outdoorsDemoBlocked} onClick={() => void onDemoOutdoors()}>外出得卡演示</button>
       <button className="secondary full" disabled={busy} onClick={() => void onSetDemoRods()}>演示算筹设为 10 枚</button>
     </div> : null}
   </div>;

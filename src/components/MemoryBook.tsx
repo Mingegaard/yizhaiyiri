@@ -3,8 +3,9 @@ import { ArrowLeft, Camera, ChevronDown, ChevronLeft, ChevronRight } from 'lucid
 import type { MemoryEntry } from '../game/types';
 import { localDay } from '../game/engine';
 import { photoBlob } from '../game/storage';
-import { knowledgeCards } from '../content/cards';
-import { calendarCells, lunarDate, memoryActivityLabels, memoryColumns, memorySentences } from '../game/memoryBook';
+import { cardImageUrl, knowledgeCards } from '../content/cards';
+import { calendarCells, lunarDate, memoryActivity, memoryActivityLabels, memoryColumns, memorySentences } from '../game/memoryBook';
+import { HealthyKnowledge } from './HealthyKnowledge';
 import './book.css';
 
 const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
@@ -32,19 +33,23 @@ function MemoryPhoto({ id, demo, label }: { id: string; demo: boolean; label: st
   </div>;
 }
 
-function ElfPicture({ cardId, label }: { cardId: string; label: string }) {
+function ElfPicture({ cardId, label, onOpen }: { cardId: string; label: string; onOpen: (id: string) => void }) {
   const card = knowledgeCards[cardId];
-  return <div className={`memory-tile elf-picture motif-${card?.motif ?? 'adventure'}`} role="img" aria-label={`${label}的小精灵来信`}>
-    {card?.image ? <img src={card.image} alt={card.title}/> : <img className="elf-scene-art" src={elfScenes} alt="" aria-hidden="true" decoding="async"/>}
-  </div>;
+  return <button type="button" className={`memory-tile elf-picture motif-${card?.motif ?? 'adventure'}`} aria-label={`查看卡片：${card?.title ?? label}`} onClick={() => onOpen(cardId)}>
+    {card?.image ? <img className="collected-card-art" src={cardImageUrl(card.image)} alt={card.title}/> : <img className="elf-scene-art" src={elfScenes} alt="" aria-hidden="true" decoding="async"/>}
+  </button>;
 }
 
-function PictureMatrix({ entries, demo }: { entries: MemoryEntry[]; demo: boolean }) {
+function PictureMatrix({ entries, demo, onOpenCard }: { entries: MemoryEntry[]; demo: boolean; onOpenCard: (id: string) => void }) {
   const columns = memoryColumns(entries);
   if (!columns.length) return <div className="almanac-media media-empty" aria-label="尚无任务打卡照片或来信"/>;
   const photoRows = Math.max(...columns.map(column => column.photoIds.length));
+  const cards = columns.map(column => [...new Set(entries.filter(entry => entry.cardId && memoryActivity(entry) === column.activity).map(entry => entry.cardId!))]);
+  const cardRows = Math.max(...cards.map(ids => ids.length));
   return <div className="almanac-media" role="group" aria-label="按活动分列的来信与打卡照片" style={{ '--memory-columns': columns.length } as CSSProperties}>
-    {columns.map(column => column.cardId ? <ElfPicture key={`elf:${column.activity}`} cardId={column.cardId} label={memoryActivityLabels[column.activity]}/> : <div key={`elf:${column.activity}`} className="memory-tile tile-empty" aria-hidden="true"/>)}
+    {Array.from({ length: Math.max(1, cardRows) }, (_, row) => <Fragment key={`cards:${row}`}>{columns.map((column, index) => cards[index][row]
+      ? <ElfPicture key={column.activity} cardId={cards[index][row]} label={memoryActivityLabels[column.activity]} onOpen={onOpenCard}/>
+      : <div key={column.activity} className="memory-tile tile-empty" aria-hidden="true"/>)}</Fragment>)}
     {Array.from({ length: photoRows }, (_, row) => <Fragment key={row}>{columns.map(column => column.photoIds[row]
       ? <MemoryPhoto key={column.activity} id={column.photoIds[row]} demo={demo} label={memoryActivityLabels[column.activity]}/>
       : <div key={column.activity} className="memory-tile tile-empty" aria-hidden="true"/>)}</Fragment>)}
@@ -69,9 +74,10 @@ function CalendarWheel({ onClick }: { onClick: () => void }) {
   </button>;
 }
 
-function CalendarPage({ month, selectedDate, today, memories, entries, demo, onMonthChange, onSelect, onOpen }: {
+function CalendarPage({ month, selectedDate, today, memories, entries, demo, onMonthChange, onSelect, onOpen, onOpenCard }: {
   month: Date; selectedDate: string; today: string; memories: MemoryEntry[]; entries: MemoryEntry[]; demo: boolean;
   onMonthChange: (date: Date) => void; onSelect: (key: string) => void; onOpen: () => void;
+  onOpenCard: (id: string) => void;
 }) {
   const recordedDates = useMemo(() => new Set(memories.map(entry => entry.date)), [memories]);
   const year = month.getFullYear();
@@ -105,7 +111,7 @@ function CalendarPage({ month, selectedDate, today, memories, entries, demo, onM
       </button> : <span key={`blank:${index}`} className="calendar-blank" aria-hidden="true"/>)}
     </div>
     <div className={`calendar-preview ${hasSelection ? '' : 'preview-empty'}`}>
-      {hasSelection ? <><DateBlock date={selected}/><div className="calendar-thumbnails">{preview.map((item, index) => item.kind === 'elf' ? <ElfPicture key={`${item.id}:${index}`} cardId={item.id} label={item.label}/> : <MemoryPhoto key={`${item.id}:${index}`} id={item.id} demo={demo} label={item.label}/>)}</div></> : <div/>}
+      {hasSelection ? <><DateBlock date={selected}/><div className="calendar-thumbnails">{preview.map((item, index) => item.kind === 'elf' ? <ElfPicture key={`${item.id}:${index}`} cardId={item.id} label={item.label} onOpen={onOpenCard}/> : <MemoryPhoto key={`${item.id}:${index}`} id={item.id} demo={demo} label={item.label}/>)}</div></> : <div/>}
       <button type="button" className="open-memory-day" disabled={!hasSelection} onClick={onOpen}>翻开此日<ChevronRight size={15} strokeWidth={1}/></button>
     </div>
   </div>;
@@ -114,13 +120,14 @@ function CalendarPage({ month, selectedDate, today, memories, entries, demo, onM
 export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: boolean }) {
   const today = localDay(Date.now());
   const [view, setView] = useState<'day' | 'calendar'>('day');
+  const [openedCardId, setOpenedCardId] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState(today);
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const heading = useRef<HTMLHeadingElement>(null);
   const entries = useMemo(() => memories.filter(entry => entry.date === selectedDate).sort((a, b) => a.timestamp - b.timestamp), [memories, selectedDate]);
   const sentences = useMemo(() => memorySentences(entries), [entries]);
   const selected = dateFromKey(selectedDate);
-  useEffect(() => { heading.current?.focus({ preventScroll: true }); }, [view]);
+  useEffect(() => { heading.current?.focus({ preventScroll: true }); }, [view, openedCardId]);
   function moveDay(direction: number) {
     const date = dateFromKey(selectedDate);
     date.setDate(date.getDate() + direction);
@@ -130,6 +137,7 @@ export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: 
     setMonth(new Date(selected.getFullYear(), selected.getMonth(), 1));
     setView('calendar');
   }
+  if (openedCardId) return <section className="memory-card-review" aria-label="珍藏卡片"><HealthyKnowledge cardId={openedCardId} closeLabel="返回记忆本" onClose={() => setOpenedCardId(null)}/></section>;
   return <section className={`memory-book view-${view}`} aria-label="记忆本" data-testid="memory-book">
     <header className="almanac-heading">
       <button type="button" className="book-arrow" aria-label={view === 'day' ? '前一天' : '返回日页'} onClick={() => view === 'day' ? moveDay(-1) : setView('day')}>{view === 'day' ? <ChevronLeft size={20} strokeWidth={1}/> : <ArrowLeft size={19} strokeWidth={1}/>}</button>
@@ -137,12 +145,12 @@ export function MemoryBook({ memories, demo }: { memories: MemoryEntry[]; demo: 
       {view === 'day' ? <button type="button" className="book-arrow" aria-label="后一天" onClick={() => moveDay(1)}><ChevronRight size={20} strokeWidth={1}/></button> : <span/>}
     </header>
     {view === 'day' ? <>
-      <PictureMatrix entries={entries} demo={demo}/>
+      <PictureMatrix entries={entries} demo={demo} onOpenCard={setOpenedCardId}/>
       <div className="almanac-day-content">
         <DateBlock date={selected}/>
         <ul className="almanac-sentences" aria-label="这一日的记录">{sentences.map(sentence => <li key={sentence}>{sentence}</li>)}</ul>
         <CalendarWheel onClick={openCalendar}/>
       </div>
-    </> : <CalendarPage month={month} selectedDate={selectedDate} today={today} memories={memories} entries={entries} demo={demo} onMonthChange={setMonth} onSelect={setSelectedDate} onOpen={() => setView('day')}/>}
+    </> : <CalendarPage month={month} selectedDate={selectedDate} today={today} memories={memories} entries={entries} demo={demo} onMonthChange={setMonth} onSelect={setSelectedDate} onOpen={() => setView('day')} onOpenCard={setOpenedCardId}/>}
   </section>;
 }

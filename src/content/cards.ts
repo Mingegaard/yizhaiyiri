@@ -8,6 +8,8 @@ export interface KnowledgeCard {
   image: string | null;
   body: string;
   source?: string;
+  artifactName?: string;
+  tip?: string;
   motif: 'reading' | 'meal' | 'outdoors' | 'sleep' | 'adventure';
 }
 
@@ -22,10 +24,22 @@ export const knowledgeCards: Record<string, KnowledgeCard> = {
 
 export const healthyCardPools: Record<ActivityId, readonly string[]> = {
   breakfast: ['reading-leaves', 'reading-room'], lunch: ['morning-bamboo', 'morning-greens'],
-  outdoors: ['walking-shade', 'walking-streets'], dinner: ['evening-aroma', 'evening-rice'],
+  outdoors: ['outdoors-agate-cup', 'outdoors-dancing-horse', 'outdoors-camel-musicians'], dinner: ['evening-aroma', 'evening-rice'],
   sleep: ['sleep-moon', 'sleep-silence'],
 };
 const healthyCards: KnowledgeCard[] = [
+  { id: 'outdoors-agate-cup', title: '这只兽嘴，竟是杯子的出酒口', category: '奇珍 · 外出所得', image: 'cards/outdoors/agate-cup.png', motif: 'outdoors',
+    artifactName: '唐·镶金兽首形玛瑙杯', source: '陕西历史博物馆藏',
+    tip: '“猜猜酒从哪里出来？不是杯沿，是这张金嘴。”',
+    body: '这只杯子由缠丝玛瑙雕成，天然的红褐与乳白纹理顺着杯身流动，前端却变成了一颗双角兽首。最巧妙的是镶金的兽嘴——它其实是塞子，取下后，酒液便能从兽口流出。\n\n这种有出液孔、常呈兽角形的酒具称为“来通”，在中亚、西亚等地可见。它为何来到唐代长安、究竟在哪里制作，仍有值得追问的故事。' },
+  { id: 'outdoors-dancing-horse', title: '马不只会跳舞，还会衔杯', category: '奇珍 · 外出所得', image: 'cards/outdoors/dancing-horse-ewer.jpeg', motif: 'outdoors',
+    artifactName: '唐·鎏金舞马衔杯纹皮囊式银壶', source: '陕西历史博物馆藏',
+    tip: '“这匹马嘴里衔着杯子。唐人的宴席，连马都有节目？”',
+    body: '银壶上，一匹金色的马衔杯而立，把唐代“舞马”的形象留在了器壁上。唐代宫廷曾训练马匹随乐表演，舞马衔杯也成为令人称奇的宴饮景象。\n\n再看壶身：扁圆的轮廓、上方的提梁，让金属器物保留了皮囊般的外形。一件银壶，把游牧生活的器形与宫廷宴乐的趣味放在了一起。' },
+  { id: 'outdoors-camel-musicians', title: '骆驼背上，竟坐着一整个乐队', category: '奇珍 · 外出所得', image: 'cards/outdoors/camel-musicians.png', motif: 'outdoors',
+    artifactName: '唐·三彩载乐骆驼俑', source: '陕西历史博物馆藏',
+    tip: '“我本想带一件乐器回来，结果看见了整座舞台。”',
+    body: '骆驼昂首张口，背上托起一个铺着彩毯的平台。七名男乐手面向外侧围坐演奏，中间还站着一位歌唱的女子——八个人，把驼背变成了一座热闹的小舞台。\n\n这不是一张写实的演出照片，而是唐代工匠富有想象力的塑造。人物的姿态、乐器与流动的三彩釉色，让静止的陶俑仿佛随时会响起音乐。' },
   { id: 'reading-leaves', title: '贝叶书', category: '晨读 · 诗中物', image: null, motif: 'reading', body: '“闲持贝叶书，步出东斋读。”\n贝叶书，是以贝叶为书写材料的书籍。晨读时，诗人手中的书也是眼前的一道风景。' },
   { id: 'reading-room', title: '东斋晨读', category: '晨读 · 诗中景', image: null, motif: 'reading', body: '“闲持贝叶书，步出东斋读。”\n持书、出斋、读书，诗句以三个动作铺开一段安闲的晨光。' },
   { id: 'morning-bamboo', title: '雨后新笋', category: '朝食 · 诗中味', image: null, motif: 'meal', body: '“宿雨林笋嫩，晨露园葵鲜。”\n昨夜的雨、清晨的露，把林中的笋与园中的葵连成一幅朝餐小景。' },
@@ -38,3 +52,7 @@ const healthyCards: KnowledgeCard[] = [
   { id: 'sleep-silence', title: '夜深静卧', category: '就寝 · 诗中意', image: null, motif: 'sleep', body: '“夜深静卧百虫绝。”\n静卧之后，虫声也远了。诗句把夜深的寂静，留在了听觉之中。' },
 ];
 for (const card of healthyCards) knowledgeCards[card.id] = card;
+
+export function cardImageUrl(path: string): string {
+  return `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`;
+}

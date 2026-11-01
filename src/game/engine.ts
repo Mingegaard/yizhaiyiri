@@ -100,7 +100,8 @@ export function reduceGame(input: GameState, command: GameCommand, now: number, 
       if (state.completedActivities.includes(key)) return state;
       if (state.session || state.sleep) throw new Error('请先结束当前的专注。');
       if (!command.photoId) throw new Error('请先选择一张照片。');
-      return completeHealthyTask(state, { id: `photo:${key}`, date: localDay(now), timestamp: now,
+      const replay = command.activityId === 'outdoors' && state.demoOutdoorsRound ? `:demo:${state.demoOutdoorsRound}` : '';
+      return completeHealthyTask(state, { id: `photo:${key}${replay}`, date: localDay(now), timestamp: now,
         kind: command.activityId === 'outdoors' ? 'outdoors' : command.activityId === 'sleep' ? 'sleep' : 'meal',
         title: activityTitles[command.activityId], rods: 1, activityId: command.activityId, photoId: command.photoId }, key);
     }
@@ -150,5 +151,16 @@ export function reduceGame(input: GameState, command: GameCommand, now: number, 
         kind: 'adventure', title: '完成一次冒险', rods: 1, cardId: 'wamai' });
     }
     case 'demoRods': return { ...state, rods: ADVENTURE_COST };
+    case 'demoOutdoors': {
+      if (state.session || state.sleep) throw new Error('请先结束当前的打坐或休息。');
+      const count = state.healthyTaskCount ?? new Set(state.completedActivities).size;
+      return { ...state,
+        // Prime the next fifth task without granting a card or changing existing rewards.
+        healthyTaskCount: Math.floor(count / 5) * 5 + 4,
+        demoOutdoorsRound: (state.demoOutdoorsRound ?? 0) + 1,
+        completedActivities: state.completedActivities.filter(key => key !== activityKey(localDay(activityNow), 'outdoors')),
+        healthyCelebration: null,
+      };
+    }
   }
 }

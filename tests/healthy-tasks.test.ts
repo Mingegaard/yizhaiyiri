@@ -35,7 +35,7 @@ describe('银钩健康任务结算', () => {
     expect(tenth.memories[1].cardId).toBe(healthyCardPools[id][1]);
     expect(knowledgeCards[tenth.memories[1].cardId!]).toBeDefined();
     const back = photo({ ...tenth, healthyTaskCount: 14 }, id, 8);
-    expect(back.memories[2].cardId).toBe(healthyCardPools[id][0]);
+    expect(back.memories[2].cardId).toBe(healthyCardPools[id][2 % healthyCardPools[id].length]);
   });
 
   it('照片和专注混合累计，双击、刷新和另一种方式都不会多发', () => {
@@ -100,6 +100,37 @@ describe('银钩健康任务结算', () => {
     expect(done.healthyCelebration).toBeNull();
     expect(done.rods).toBe(10);
     expect(done.memories[0].cardId).toBe(healthyCardPools.dinner[0]);
+  });
+});
+
+describe('外出得卡演示', () => {
+  it('只准备下一次奖励，保留原有筹数和记忆，反复演示三张卡片时不重用照片记录ID', () => {
+    let state = createInitialState();
+    for (let index = 0; index < 4; index++) {
+      state = reduceGame(JSON.parse(JSON.stringify(state)), { type: 'demoOutdoors' }, at(16));
+      expect(state.rods).toBe(9 + index);
+      expect(state.healthyTaskCount).toBe(index * 5 + 4);
+      expect(state.memories).toHaveLength(index);
+      expect(state.healthyCelebration).toBeNull();
+      state = photo(state, 'outdoors');
+      expect(state.rods).toBe(10 + index);
+      expect(state.healthyTaskCount).toBe((index + 1) * 5);
+      expect(state.memories.at(-1)?.cardId).toBe(healthyCardPools.outdoors[index % 3]);
+      expect(photo(state, 'outdoors')).toBe(state);
+    }
+    expect(new Set(state.memories.map(memory => memory.id)).size).toBe(4);
+  });
+
+  it('不改动正在进行的计时；准备后仍需真正完成外出，取消不发卡', () => {
+    const ready = reduceGame(createInitialState(), { type: 'demoOutdoors' }, at(16));
+    const started = reduceGame(ready, { type: 'startTimer', mode: 'focus', activityId: 'outdoors', durationMs: 10000 }, at(16));
+    expect(() => reduceGame(started, { type: 'demoOutdoors' }, at(16) + 1000)).toThrow('请先结束');
+    const canceled = reduceGame(started, { type: 'cancelTimer' }, at(16) + 1000);
+    expect(canceled.rods).toBe(9);
+    expect(canceled.memories).toHaveLength(0);
+    const done = reduceGame(started, { type: 'reconcile' }, at(16) + 10000);
+    expect(done.memories[0].cardId).toBe(healthyCardPools.outdoors[0]);
+    expect(done).toMatchObject({ rods: 10, healthyTaskCount: 5 });
   });
 });
 

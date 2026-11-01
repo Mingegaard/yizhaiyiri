@@ -1,0 +1,25 @@
+{
+  "sourceDocument": "奇珍卡片(1).docx",
+  "source": "User supplied card copy and embedded images",
+  "museumCredit": "陕西历史博物馆藏",
+  "images": [
+    {
+      "file": "agate-cup.png",
+      "sha256": "106a629141159a8a1cb58445bf29897b9c3eb9744cc77b3b32c79943481cb725",
+      "bytes": 150600,
+      "modified": false
+    },
+    {
+      "file": "dancing-horse-ewer.jpeg",
+      "sha256": "17309a18053344a93ab023d3336464c8d1c4a4c7e5c86dbe971b2a2f9592a974",
+      "bytes": 3789741,
+      "modified": false
+    },
+    {
+      "file": "camel-musicians.png",
+      "sha256": "934e55673a7ae6fc2cf26cf02b0b5ca068e81a3dfc726ce3870c50e783b4ed25",
+      "bytes": 306463,
+      "modified": false
+    }
+  ]
+}

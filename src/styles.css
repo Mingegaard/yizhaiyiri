@@ -262,10 +262,37 @@ small { font-size: 12px; }
 @keyframes healthy-joy { 0%,100% { opacity: 0; } 20%,80% { opacity: 1; } }
 .healthy-card-modal { width: min(430px, calc(100vw - 32px)); }
 .healthy-knowledge { text-align: center; padding: 30px 28px 24px; font-family: var(--serif); }
+.healthy-knowledge:focus { outline: none; }
 .knowledge-category { color: #8e8067; font-size: 12px; letter-spacing: 3px; }
 .knowledge-motif { margin: 28px auto 20px; width: 64px; height: 78px; display: grid; place-items: center; font-size: 34px; border: 1px solid #9b6b52; color: #9b6b52; }
 .healthy-knowledge h2 { font-size: 25px; font-weight: 400; letter-spacing: 5px; margin: 16px 0; }
 .healthy-knowledge p { white-space: pre-line; font-size: 15px; line-height: 2; color: #6a6854; }
+.healthy-card-modal:has(.knowledge-illustrated) { width: min(860px, calc(100vw - 28px)); border: 1px solid #cabb9d; border-radius: 0; background: #f3eddd; }
+.knowledge-illustrated { padding: 28px 34px 20px; }
+.knowledge-illustrated h2 { font-size: 27px; line-height: 1.6; letter-spacing: .07em; margin: 14px 0 24px; color: #514d40; }
+.knowledge-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 30px; }
+.knowledge-illustration { min-width: 0; margin: 0; }
+.knowledge-illustration img { display: block; width: 100%; height: 325px; object-fit: contain; }
+.image-outdoors-agate-cup img { height: 245px; object-fit: cover; }
+.image-outdoors-dancing-horse img { object-fit: cover; object-position: center 65%; }
+.knowledge-illustration figcaption { margin-top: 20px; padding-top: 14px; border-top: 1px solid #bdac8c66; color: #7f715d; font-size: 12px; line-height: 1.8; letter-spacing: .04em; }
+.knowledge-illustration figcaption span { display: block; font-size: 11px; color: #95846c; margin-top: 4px; }
+.knowledge-reading { text-align: left; }
+.knowledge-tip { padding: 0 0 16px; border-bottom: 1px solid #bdac8c66; margin-bottom: 18px; }
+.knowledge-tip > span { font-size: 11px; letter-spacing: .14em; color: #8c604b; }
+.knowledge-tip p { margin: 8px 0 0; font-size: 15px; line-height: 1.9; color: #7f664f; }
+.knowledge-copy p { margin: 0 0 15px; font-size: 14px; line-height: 2; }
+.knowledge-copy p:last-child { margin-bottom: 0; }
+.knowledge-illustrated > .healthy-return { border-top: 1px solid #bdac8c66; min-width: 120px; padding-top: 15px; margin-top: 24px; }
+@media(max-width: 620px) {
+  .knowledge-illustrated { padding: 25px 22px 18px; }
+  .knowledge-illustrated h2 { font-size: 22px; letter-spacing: .05em; margin-bottom: 18px; }
+  .knowledge-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .knowledge-illustration img { height: 245px; }
+  .image-outdoors-agate-cup img { height: 190px; }
+  .image-outdoors-dancing-horse img { height: 275px; object-fit: contain; }
+  .knowledge-illustration figcaption { margin-top: 10px; padding-top: 10px; }
+}
 .night .daily-note { color: #f3e6c5; text-shadow: 0 1px 4px #4a5a51; }
 @media(max-width: 720px) { .daily-note { padding: 4px; font-size: 16px; } .daily-note .silver-hook-icon { display: block; } .healthy-modal .modal-inner { padding: 38px 22px 24px; } .healthy-verse { font-size: 17px; margin-bottom: 24px; } .healthy-destination { font-size: 15px; } }
 @media(prefers-reduced-motion: reduce) { .has-task .silver-hook-icon, .healthy-celebration { animation: none; } }

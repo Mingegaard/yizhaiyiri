@@ -39,6 +39,9 @@
 .task-photo { text-decoration: none; transition: opacity .15s; }
 .task-photo:hover { opacity: .83; }
 .elf-picture { position: relative; color: #a0825c; background: #eee6d6; }
+.memory-book .elf-picture { padding: 0; border-radius: 0; cursor: pointer; }
+.elf-picture .collected-card-art { object-fit: contain; }
+.memory-book .elf-picture:hover { border-color: #9d4438; }
 .elf-picture.motif-outdoors { color: #6e7b5c; background: #e7e9dd; }
 .elf-picture.motif-sleep { color: #7d7c81; background: #e8e5e0; }
 .elf-picture.motif-adventure { color: #9f7662; background: #ece1d6; }

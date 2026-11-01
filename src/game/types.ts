@@ -50,6 +50,8 @@ export interface GameState {
   story: StoryProgress | null;
   completedActivities: string[];
   healthyTaskCount?: number;
+  /** Demo-only replay identity, kept in the separate demo save. */
+  demoOutdoorsRound?: number;
   healthyCelebration?: { memoryId: string; activityId: ActivityId; cardId?: string } | null;
 }
 
@@ -66,4 +68,5 @@ export type GameCommand =
   | { type: 'startStory' }
   | { type: 'advanceStory'; nodeId: string }
   | { type: 'inspectStory'; nodeId: string; flagId: string }
-  | { type: 'demoRods' };
+  | { type: 'demoRods' }
+  | { type: 'demoOutdoors' };
