@@ -1,0 +1,20 @@
+{
+  "schema": "lux3d.delivery-spec/v2",
+  "title": "李宅异闻 · 焦痕与麻屦脚印",
+  "items": [
+    {
+      "id": "fire-trace",
+      "label": "焦痕与麻屦脚印 · Lux3D 原件",
+      "selectedAttemptId": "fire-trace-generation",
+      "attempts": [
+        {
+          "id": "fire-trace-generation",
+          "statePath": "delivery-state.json"
+        }
+      ]
+    }
+  ],
+  "scene": {
+    "status": "not-requested"
+  }
+}

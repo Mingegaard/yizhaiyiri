@@ -1,0 +1,42 @@
+{
+  "method": "local Blender modeling",
+  "reference": "user-supplied painted cumulus image; ground-view volume revision",
+  "cloudBanks": [
+    "sky_cloud_bank_1",
+    "sky_cloud_bank_2",
+    "sky_cloud_bank_3"
+  ],
+  "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/tang-volume-clouds.glb",
+  "meshVertices": 80168,
+  "note": "Horizontal volume with sculpted underside, vertex-painted bounce light and sparse underside strokes; local Blender output, no paid generation submitted.",
+  "sha256": "7ac342bd8c1417791e40ecba9271cc246d3bdd04cbc74fca9c085ec0da45c434",
+  "bytes": 3527460,
+  "triangles": 160140,
+  "groundViewVolumes": [
+    {
+      "node": "sky_cloud_bank_1__painted_surface",
+      "size": [
+        10.280150890350342,
+        3.836031138896942,
+        5.7025840282440186
+      ]
+    },
+    {
+      "node": "sky_cloud_bank_2__painted_surface",
+      "size": [
+        10.26075553894043,
+        3.7952933311462402,
+        5.628157615661621
+      ]
+    },
+    {
+      "node": "sky_cloud_bank_3__painted_surface",
+      "size": [
+        10.557286739349365,
+        3.810524135828018,
+        5.792808294296265
+      ]
+    }
+  ],
+  "geometryValidated": true
+}

@@ -1,0 +1,25 @@
+{
+  "reuse": [
+    "courtyard",
+    "bamboo",
+    "writing table and books",
+    "tally vessel",
+    "tile spirit",
+    "chest",
+    "garments and shoes"
+  ],
+  "newAsset": {
+    "id": "fire-trace",
+    "parameters": {
+      "prompt": "An isolated ground-level investigation prop for a Tang dynasty courtyard mystery game: a low irregular patch of charred straw and dark ash, with two oversized woven straw-sandal footprints impressed into pale ochre earth. No person, no flame, no smoke, no scenery, no lettering. Compact thin flat ground patch, wide and shallow, intended footprint 1.8 by 1.2 meters and 0.025 meters thick. Restrained traditional Chinese hand-painted illustration, muted warm grey, pale earthy ochre, charcoal ink, matte flat pigment colors, simple clean silhouette, matching an outlined ancient Chinese architectural diorama. Distinct sandal weave impressions readable from above and oblique view.",
+      "version": "G1",
+      "style": "hand_painted",
+      "faceCount": 10000,
+      "outputFormat": [
+        "glb"
+      ],
+      "aiPredictSize": false
+    }
+  },
+  "authorization": "User explicitly authorized missing models without a credit limit."
+}

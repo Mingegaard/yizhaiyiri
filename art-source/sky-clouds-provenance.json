@@ -1,0 +1,22 @@
+{
+  "method": "local Blender modeling",
+  "reference": "art-source/sky-cloud-reference.png",
+  "cloudBanks": [
+    "sky_cloud_bank_1",
+    "sky_cloud_bank_2",
+    "sky_cloud_bank_3"
+  ],
+  "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/tang-sky-clouds.glb",
+  "meshVertices": 67472,
+  "note": "Lux3D OpenAPI pricing could not connect; no generation task was submitted.",
+  "sha256": "0706942df1e075c7967338862921d66231784d1f4cd6d7802b7514f48ad6360e",
+  "bytes": 2968892,
+  "triangles": 134760,
+  "verifiedInvocation": {
+    "tool": "exec_command",
+    "sessionId": 94608,
+    "exitCode": 0,
+    "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python art-source/build_sky_clouds.py"
+  },
+  "blenderVersion": "5.2.0 LTS"
+}

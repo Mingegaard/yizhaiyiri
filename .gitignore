@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+*.blend1
+art-source/adventure-generation/delivery/
+art-source/adventure-generation/quote*.json
+art-source/adventure-generation/fire-trace-attempt.json
+art-source/adventure-generation/delivery-state.json

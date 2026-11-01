@@ -1,0 +1,651 @@
+{
+  "opening": {
+    "title": "东郭火迹",
+    "body": [
+      "我是李哲，任常州录事参军，家住丹阳县东郭。",
+      "贞元四年春，庄园茅舍白日无故起火。救灭后地上留下大脚印，家人疑盗，搜而无果。"
+    ],
+    "presentation": "narrative",
+    "task": "东郭火迹",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "fire-report": {
+    "title": "阿万报火",
+    "body": [
+      "“郎君，又起火了！这火来得怪，扑得也快。”"
+    ],
+    "presentation": "dialogue",
+    "task": "阿万报火",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "阿万"
+  },
+  "fire-thought": {
+    "title": "不像是人",
+    "body": [
+      "若真是盗，怎会旬时屡灾又易扑？怕不是人。"
+    ],
+    "presentation": "thought",
+    "task": "不像是人",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "fire-trace": {
+    "title": "查看焦痕与脚印",
+    "body": [
+      "麻屦迹广尺余。"
+    ],
+    "presentation": "object",
+    "task": "去院中查看焦痕与脚印",
+    "buttonLabel": "继续",
+    "options": [
+      {
+        "label": "命人搜索",
+        "feedback": "沿脚印搜寻，仍无所获。"
+      },
+      {
+        "label": "先灭火",
+        "feedback": "余火扑灭，仍找不到起火的缘由。"
+      }
+    ]
+  },
+  "book-background": {
+    "title": "阿万报书",
+    "body": [
+      "乳母阿万能见鬼神，常见一丈夫随人出入，或作胡人形：须髯伟然，羔裘貂帽，间以朱紫，倏闪而出。"
+    ],
+    "presentation": "narrative",
+    "task": "阿万报书",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a1-report": {
+    "title": "胡人取书",
+    "body": [
+      "“郎君！我看见一个胡人拿着书跑了！”"
+    ],
+    "presentation": "dialogue",
+    "task": "胡人取书",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "阿万"
+  },
+  "book-thought": {
+    "title": "去书房",
+    "body": [
+      "我得赶紧去看看。"
+    ],
+    "presentation": "thought",
+    "task": "去书房",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a1-missing": {
+    "title": "检查书卷缺口",
+    "body": [
+      "果然少了一卷《春秋》。"
+    ],
+    "presentation": "object",
+    "task": "去书房查看书帙",
+    "buttonLabel": "继续",
+    "options": [
+      {
+        "label": "再找一遍书架",
+        "feedback": "书架、案下都找过了，仍不见那卷书。"
+      },
+      {
+        "label": "向空处质问",
+        "feedback": "屋里无人应答，只有灯火微动。"
+      }
+    ]
+  },
+  "a1-prayer": {
+    "title": "祝祈",
+    "body": [
+      "我向空处诚心祝祈。片刻后，书帙传来轻响。"
+    ],
+    "presentation": "narrative",
+    "task": "祝祈",
+    "buttonLabel": "诚心祝祈",
+    "options": []
+  },
+  "a1-returned": {
+    "title": "展开归还的书卷",
+    "body": [
+      "书已复归，无损无污。"
+    ],
+    "presentation": "object",
+    "task": "走近书帙，点击归还的书卷",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "bamboo-background": {
+    "title": "伐竹得书",
+    "body": [
+      "家中患于怪事，私下议论庭竹耸茂，是否可供鬼魅栖身。"
+    ],
+    "presentation": "narrative",
+    "task": "伐竹得书",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a2-discussion": {
+    "title": "家人议竹",
+    "body": [
+      "“郎君，这竹子太密，怕藏邪。伐了种桃如何？”"
+    ],
+    "presentation": "dialogue",
+    "task": "家人议竹",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "家人"
+  },
+  "bamboo-thought": {
+    "title": "伐竹种桃",
+    "body": [
+      "不如伐去种桃。我先去竹林附近看看。"
+    ],
+    "presentation": "thought",
+    "task": "伐竹种桃",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a2-letter": {
+    "title": "拾起竹下的信",
+    "body": [],
+    "presentation": "letter",
+    "task": "去庭院左侧竹丛寻找信纸",
+    "buttonLabel": "继续",
+    "options": [
+      {
+        "label": "它竟听到了",
+        "feedback": "我们方才分明只是私议。它究竟藏在哪里？"
+      },
+      {
+        "label": "它还替我算起账来",
+        "feedback": "这怪客不只窥听，竟还替我盘算起买卖。"
+      },
+      {
+        "label": "看看纸角",
+        "feedback": "方数寸，笔札不工。小小一纸，字迹并不工整。"
+      }
+    ]
+  },
+  "a2-nephews": {
+    "title": "士温斥骂",
+    "body": [
+      "“哪里来的妖物，只会投书装神弄鬼！有本事出来相见！”"
+    ],
+    "presentation": "dialogue",
+    "task": "士温斥骂",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士温"
+  },
+  "nephew-shiru": {
+    "title": "士儒斥骂",
+    "body": [
+      "“写几张破纸吓唬谁？再投书，我便连纸带字一起烧了！”"
+    ],
+    "presentation": "dialogue",
+    "task": "士儒斥骂",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士儒"
+  },
+  "shoes-thought": {
+    "title": "骂声刚歇",
+    "body": [
+      "他二人刚勇，可这妖物怕不会善罢甘休。门边好像又有异动。"
+    ],
+    "presentation": "thought",
+    "task": "骂声刚歇",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-empty": {
+    "title": "查看冠履空位",
+    "body": [
+      "冠履不见了。"
+    ],
+    "presentation": "object",
+    "task": "去门边放冠履处看看",
+    "buttonLabel": "继续",
+    "options": [],
+    "autoAdvanceOnApproach": true
+  },
+  "shoes-complaint": {
+    "title": "冠履丢失",
+    "body": [
+      "“骂完倒好，冠履先没了！这妖物是故意作弄我们？”"
+    ],
+    "presentation": "dialogue",
+    "task": "冠履丢失",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士温与士儒"
+  },
+  "shoes-prayer": {
+    "title": "稍作祈祝",
+    "body": [
+      "不如稍作祈祝，请它归还。"
+    ],
+    "presentation": "thought",
+    "task": "稍作祈祝",
+    "buttonLabel": "稍祈之",
+    "options": []
+  },
+  "a3-restored": {
+    "title": "查看归还的冠履",
+    "body": [
+      "冠与履都回来了，下面还压着一张信纸。"
+    ],
+    "presentation": "object",
+    "task": "靠近冠履查看",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-letter": {
+    "title": "读冠履下的信",
+    "body": [],
+    "presentation": "letter",
+    "task": "点击冠履旁的信纸",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "shoes-response": {
+    "title": "它在回应",
+    "body": [
+      "先骂它，它便取走冠履；稍一祈祝，又还了回来。这物倒像是在回应我们。"
+    ],
+    "presentation": "thought",
+    "task": "它在回应",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-time": {
+    "title": "邻犬被盗",
+    "body": [
+      "过了旬日，邻人盗走我家的狗，杀而食之。事发后，又得一封书。"
+    ],
+    "presentation": "narrative",
+    "task": "邻犬被盗",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "neighbor-letter": {
+    "title": "查看投书",
+    "body": [],
+    "presentation": "letter",
+    "task": "去庭中投书处查看",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-loss-record": {
+    "title": "失物渐多",
+    "body": [
+      "数旬之后，家中失物至多。家人以为那鬼物作盗。"
+    ],
+    "presentation": "narrative",
+    "task": "失物渐多",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "theft-dialogue": {
+    "title": "家人疑盗",
+    "body": [
+      "“最近家中总丢东西，怕是那鬼物作盗。”"
+    ],
+    "presentation": "dialogue",
+    "task": "家人疑盗",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "家人"
+  },
+  "theft-thought": {
+    "title": "是否是它",
+    "body": [
+      "失物至多，难道真是它？"
+    ],
+    "presentation": "thought",
+    "task": "是否是它",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-defense": {
+    "title": "查看盗诗来信",
+    "body": [],
+    "presentation": "letter",
+    "task": "去书房点击新来的信",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a3-summer": {
+    "title": "兄弟提防",
+    "body": [
+      "“你等着，一定抓住你！”"
+    ],
+    "presentation": "dialogue",
+    "task": "兄弟提防",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士温与士儒"
+  },
+  "a4-report": {
+    "title": "夏夜擒瓦",
+    "body": [
+      "夏夜，士温醉卧，背着床头烛火。一个丈夫径入烛前。",
+      "士温忽然跃起擒住它，烛火随之熄灭。暗中扭打许久，传出喀喀声。"
+    ],
+    "presentation": "narrative",
+    "task": "夏夜擒瓦",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a4-hard": {
+    "title": "拿灯来",
+    "body": [
+      "“捉住了！拿灯来！”"
+    ],
+    "presentation": "dialogue",
+    "task": "拿灯来",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士温"
+  },
+  "tile-thought": {
+    "title": "究竟何物",
+    "body": [
+      "这物究竟是何形？"
+    ],
+    "presentation": "thought",
+    "task": "究竟何物",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a4-reveal": {
+    "title": "查看被擒之物",
+    "body": [
+      "是一瓦，瓦背画眉目，戴纸头巾，穿小儿衣，披帛缠头数匝。"
+    ],
+    "presentation": "object",
+    "task": "去书房门前查看被擒之物",
+    "buttonLabel": "钉于柱上击碎",
+    "options": []
+  },
+  "a4-fragments": {
+    "title": "查看碎瓦",
+    "body": [
+      "瓦片碎裂，留在柱下。"
+    ],
+    "presentation": "object",
+    "task": "查看柱下碎瓦",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a5-woman": {
+    "title": "丧服妇人",
+    "body": [
+      "“杀我夫！”",
+      "“一鸡死，一鸡鸣，吾属百户，当相报耳！”"
+    ],
+    "presentation": "dialogue",
+    "task": "丧服妇人",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "丧服妇人"
+  },
+  "woman-thought": {
+    "title": "不止一瓦",
+    "body": [
+      "打碎一瓦，竟引出更多？"
+    ],
+    "presentation": "thought",
+    "task": "不止一瓦",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a5-letter": {
+    "title": "拾起妇人投书",
+    "body": [],
+    "presentation": "letter",
+    "task": "去庭院投书处拾信",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a5-clothes": {
+    "title": "查看树上衣物",
+    "body": [
+      "人的衣服挂在中庭树上，随风扶疏，不知何由。"
+    ],
+    "presentation": "object",
+    "task": "靠近中庭树查看衣物",
+    "buttonLabel": "求而解之",
+    "options": []
+  },
+  "a5-clothes-returned": {
+    "title": "查看落下的衣物",
+    "body": [
+      "衣物已解下，落回树下。"
+    ],
+    "presentation": "object",
+    "task": "靠近树下查看归还的衣物",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a5-vessels": {
+    "title": "怪事如初",
+    "body": [
+      "其后又有大器物投入小器物中，出入不碍。怪事往来如初。"
+    ],
+    "presentation": "narrative",
+    "task": "怪事如初",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "second-capture": {
+    "title": "士儒再擒瓦",
+    "body": [
+      "过了些时日，士儒张灯，见一妇人戏于烛下，便擒住她。",
+      "扭扯良久，手中渐硬，照灯看时，也是穿衣的瓦。"
+    ],
+    "presentation": "narrative",
+    "task": "士儒再擒瓦",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "second-shiru": {
+    "title": "又是瓦",
+    "body": [
+      "“又是瓦！这回碾碎它！”"
+    ],
+    "presentation": "dialogue",
+    "task": "又是瓦",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "士儒"
+  },
+  "second-tile": {
+    "title": "擒拿妇人形瓦魅",
+    "body": [
+      "又一片穿衣的瓦。"
+    ],
+    "presentation": "object",
+    "task": "靠近庭院里的妇人形瓦魅",
+    "buttonLabel": "击碎",
+    "options": []
+  },
+  "second-fragments": {
+    "title": "查看第二堆碎瓦",
+    "body": [
+      "瓦已碎为末。明日，又有同类哀哭。"
+    ],
+    "presentation": "object",
+    "task": "查看第二堆碎瓦",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "second-thought": {
+    "title": "二郎来时",
+    "body": [
+      "此物常畏三侄，呼为二郎。二郎至，便不多来。"
+    ],
+    "presentation": "thought",
+    "task": "二郎来时",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a6-discussion": {
+    "title": "徙居与老狗",
+    "body": [
+      "我暗中想搬家，却收到来信：“闻君欲徙居，吾已先至其所矣。”",
+      "家有老犬韩儿、猛子，自闹魅后不复进食，常向空暗处摇尾嬉戏。李家后来杀了两犬。",
+      "此后家中私议，魅便不能知晓。又有信说：“自无韩大猛二，吾属无依。”",
+      "家人归来时，路旁两丈夫询问宅中怪异。家人回答后，回头看，人已不见。"
+    ],
+    "presentation": "narrative",
+    "task": "徙居与老狗",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "wei-background": {
+    "title": "韦士昌符",
+    "body": [
+      "我到润州迎来山人韦士昌。他将符置在瓦棂间，想压住邪祟。"
+    ],
+    "presentation": "narrative",
+    "task": "韦士昌符",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "wei-dialogue": {
+    "title": "置符",
+    "body": [
+      "“此符可压邪祟。”"
+    ],
+    "presentation": "dialogue",
+    "task": "置符",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "韦士昌"
+  },
+  "wei-thought": {
+    "title": "但愿能平息",
+    "body": [
+      "若真能压住便好。"
+    ],
+    "presentation": "thought",
+    "task": "但愿能平息",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "wei-letter": {
+    "title": "查看瓦棂间符纸",
+    "body": [],
+    "presentation": "letter",
+    "task": "靠近书房檐下，点击符纸",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "wei-leave": {
+    "title": "山人离去",
+    "body": [
+      "韦士昌未能平息怪事，只得离去。"
+    ],
+    "presentation": "narrative",
+    "task": "山人离去",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a6-weisheng": {
+    "title": "邀卫生来宅",
+    "body": [
+      "听闻淮楚有卫生，久于咒术，我便邀他来宅。",
+      "他来到后，鬼魅颇为忌惮，出现渐少。"
+    ],
+    "presentation": "narrative",
+    "task": "邀卫生来宅",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a7-altar": {
+    "title": "设坛置箱",
+    "body": [
+      "“设坛置箱，待其自呈状。”"
+    ],
+    "presentation": "dialogue",
+    "task": "设坛置箱",
+    "buttonLabel": "继续",
+    "options": [],
+    "character": "卫生"
+  },
+  "altar-thought": {
+    "title": "或可了结",
+    "body": [
+      "此次或可了结。"
+    ],
+    "presentation": "thought",
+    "task": "或可了结",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a7-chest": {
+    "title": "查看坛中木箱",
+    "body": [
+      "箱置坛中，须待一夜。"
+    ],
+    "presentation": "object",
+    "task": "去书房点击坛中木箱",
+    "buttonLabel": "待至明日",
+    "options": []
+  },
+  "chest-night": {
+    "title": "宿昔",
+    "body": [
+      "一夜过去，箱中得了一份状纸。"
+    ],
+    "presentation": "narrative",
+    "task": "宿昔",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "a7-confession": {
+    "title": "展开箱中供状",
+    "body": [],
+    "presentation": "letter",
+    "task": "去书房打开木箱，查看状纸",
+    "buttonLabel": "验物",
+    "options": []
+  },
+  "a7-inventory-verified": {
+    "title": "验看归还物",
+    "body": [
+      "对照状纸，失物悉在箱中。铛子尚待水滨查验。"
+    ],
+    "presentation": "object",
+    "task": "验看归还物",
+    "buttonLabel": "遣人去水滨查验",
+    "options": []
+  },
+  "a7-river": {
+    "title": "水滨查验",
+    "body": [
+      "异日，家人果然在河中找到铛子，印证了水滨之说。"
+    ],
+    "presentation": "narrative",
+    "task": "水滨查验",
+    "buttonLabel": "继续",
+    "options": []
+  },
+  "ending": {
+    "title": "怪异渐息",
+    "body": [
+      "自此，宅中不复有此往来。"
+    ],
+    "presentation": "narrative",
+    "task": "怪异渐息",
+    "buttonLabel": "继续",
+    "options": []
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "method": "local Blender modeling, not cloud generation",
+  "build": {
+    "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python art-source/build_study_daybed.py",
+    "execSession": 84318,
+    "exitCode": 0
+  },
+  "model": {
+    "sha256": "dd6225ce343f47332ed36883b0a54591687da4dae3084c55570babe7f00011ac",
+    "glbVersion": 2,
+    "meshes": 10,
+    "materials": 9,
+    "triangles": 5695,
+    "finiteFloatValuesChecked": 66330,
+    "externalBuffers": false,
+    "allMaterialsUnlit": true
+  },
+  "checks": {
+    "productionBuild": "passed",
+    "selectedTests": 22,
+    "browserErrors": [],
+    "bedCollisionChangedPixels": 0,
+    "dayNightRoundTripChangedPixels": 0,
+    "mobileViewportWidth": 390,
+    "overviewReturn": "passed",
+    "meditationCompletion": "passed"
+  },
+  "lux3d": {
+    "taskSubmitted": false,
+    "newKeyAuthentication": "successful account response; credentials stored outside project",
+    "bundledClientCompatibility": "Python 3.9 timestamp parser rejects nanosecond fractions; transport requires explicit configured proxy"
+  },
+  "preview": "study-daybed-and-pale-screen.png"
+}

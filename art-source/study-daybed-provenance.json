@@ -1,0 +1,51 @@
+{
+  "method": "Local Blender modeling from the user reference",
+  "lux3dTaskSubmitted": false,
+  "lux3dQuoteResult": "NETWORK_UNAVAILABLE",
+  "dimensionsXYZBlender": [
+    2.6410000324249268,
+    1.2200000882148743,
+    0.8804999589920044
+  ],
+  "boundsBlender": [
+    [
+      -1.3205000162124634,
+      -0.6100000143051147,
+      0.0
+    ],
+    [
+      1.3205000162124634,
+      0.6100000739097595,
+      0.8804999589920044
+    ]
+  ],
+  "meshes": 10,
+  "triangles": 5695,
+  "materials": [
+    "frame",
+    "moulding",
+    "groove",
+    "paper",
+    "mat",
+    "weave",
+    "mountain_far",
+    "mountain_mid",
+    "mountain_near",
+    "landscape_line"
+  ],
+  "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/tang-study-daybed.glb",
+  "bytes": 310584,
+  "reference": "art-source/daybed-reference.png",
+  "features": [
+    "three low rails",
+    "open front",
+    "curved horsehoof feet",
+    "shaped apron",
+    "pale woven mat",
+    "quiet flat landscape inlays",
+    "unlit celadon timber palette"
+  ],
+  "exportedMaterialCount": 9,
+  "lux3dLatestKeyAuthentication": "Successful account response; bundled Python 3.9 rejects server nanosecond timestamp precision",
+  "executionRecord": "art-source/study-daybed-verification.json"
+}

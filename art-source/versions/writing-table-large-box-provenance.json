@@ -1,0 +1,56 @@
+{
+  "method": "Local Blender construction from user references",
+  "lux3dTaskSubmitted": false,
+  "boundsBlender": [
+    [
+      -1.159999966621399,
+      -0.31901565194129944,
+      0.0
+    ],
+    [
+      1.2756518125534058,
+      0.30000001192092896,
+      1.255000114440918
+    ]
+  ],
+  "dimensionsXYZBlender": [
+    2.4356517791748047,
+    0.6190156638622284,
+    1.255000114440918
+  ],
+  "tabletopHeight": 0.77,
+  "meshes": 14,
+  "materials": 12,
+  "triangles": 34140,
+  "bytes": 1440728,
+  "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/tang-study-writing-table.glb",
+  "references": [
+    "art-source/writing-table-reference.jpg",
+    "art-source/writing-table-layout-reference.png"
+  ],
+  "features": [
+    "pierced cloud-scroll end panels",
+    "curved feet",
+    "three book stacks / fifteen volumes",
+    "open twin-door scroll box",
+    "twelve rolled manuscripts with hanging tags",
+    "flat outlined pigments"
+  ],
+  "build": {
+    "command": "/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python-exit-code 1 --python art-source/build_study_writing_table.py",
+    "execSession": 85374,
+    "exitCode": 0,
+    "blenderVersion": "5.2.0 LTS"
+  },
+  "sha256": "1ab28e68161ce137354f7314452567d3cb3ce7141d3c639b97fafb28f1b90fa9",
+  "placement": {
+    "position": [
+      2.3,
+      0.272,
+      -3.53
+    ],
+    "rotationY": -1.5707963267948966,
+    "facing": "west, toward the daybed",
+    "longAxis": "north–south"
+  }
+}

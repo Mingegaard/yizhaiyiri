@@ -1,0 +1,24 @@
+{
+  "sourceTaskId": "4539243",
+  "originalBounds": [
+    [
+      -0.498396098613739,
+      -0.4736317992210388,
+      -0.0367078073322773
+    ],
+    [
+      0.5008000731468201,
+      0.4751662313938141,
+      0.03883974254131317
+    ]
+  ],
+  "dimensionsMetres": [
+    1.8,
+    0.025,
+    1.35
+  ],
+  "material": "five flat vertex pigments, unlit",
+  "output": "/Users/gaomingze1/Documents/yizhaiyiri/public/models/story/fire-trace.glb",
+  "triangles": 9660,
+  "existingModelsModified": false
+}
