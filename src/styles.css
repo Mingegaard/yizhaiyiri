@@ -190,6 +190,16 @@ small { font-size: 12px; }
 .estate-nav button, .daily-note { color: #5c594a; background: #f5eddbe0; border: 1px solid #c8b99580; border-radius: 2px; }
 .estate-demo { background: #f4ead3b3; color: #8d7358; }
 .estate-tools button { border: 1px solid #bcae8c80; background: #f5eddbb8; color: #6b725d; }
+.background-music-toggle { position: fixed; right: 125px; bottom: 24px; z-index: 5; width: 33px; height: 33px; padding: 7px; border: 1px solid #bcae8c80; border-radius: 50%; background: #f5eddbb8; color: #6b725d; opacity: .7; }
+.background-music-toggle:hover, .background-music-toggle:focus-visible { opacity: 1; }
+.estate:is([data-mode="focus"], [data-mode="settling"]) ~ .background-music-toggle { right: 222px; bottom: max(27px, env(safe-area-inset-bottom)); opacity: .45; }
+.estate:is([data-mode="focus"], [data-mode="settling"]) ~ .background-music-toggle:hover, .estate:is([data-mode="focus"], [data-mode="settling"]) ~ .background-music-toggle:focus-visible { opacity: 1; }
+.story-screen ~ .background-music-toggle, .ending-reading ~ .background-music-toggle { right: 35px; }
+@media (max-width: 720px) {
+  .background-music-toggle { right: 110px; bottom: 25px; }
+  .estate:is([data-mode="focus"], [data-mode="settling"]) ~ .background-music-toggle { right: 207px; bottom: max(20px, env(safe-area-inset-bottom)); }
+  .story-screen ~ .background-music-toggle, .ending-reading ~ .background-music-toggle { right: 20px; }
+}
 .world-prompt { background: #657d6cef; border: 1px solid #c9b88c; border-radius: 2px; color: #fff4d6; font-family: var(--serif); letter-spacing: 2px; }
 .world-prompt:hover { background: #536d5d; }
 .primary { background: #6f897c; border-color: #6f897c; border-radius: 2px; }
