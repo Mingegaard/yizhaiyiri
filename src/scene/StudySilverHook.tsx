@@ -4,7 +4,7 @@ import { clone } from 'three/addons/utils/SkeletonUtils.js';
 import { BackSide, Color, MeshBasicMaterial, SkinnedMesh, type Group, type Mesh, type MeshStandardMaterial } from 'three';
 import { AssetNightContext, AssetSunsetContext } from './ModelAsset';
 
-/** The study's supplied character, rigged and animated by Lux3D. */
+/** Shared study/kitchen Silver Hook character, rigged and animated by Lux3D. */
 export function StudySilverHook() {
   const group = useRef<Group>(null);
   const night = useContext(AssetNightContext);

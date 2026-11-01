@@ -18,15 +18,15 @@ export function TangEnvironment({ sceneId, furniture = true }: { sceneId: SceneI
     {sceneId !== 'courtyard' && furniture ? <ModelAsset asset={roomFurniture[sceneId]} /> : null}
   </>;
 }
-export function CourtyardCompanion({ state, celebrating = false, study = false }: { state: ElfState; celebrating?: boolean; study?: boolean }) {
+export function CourtyardCompanion({ state, celebrating = false, silverHook = false }: { state: ElfState; celebrating?: boolean; silverHook?: boolean }) {
   const group = useRef<Group>(null);
   useFrame(({ clock }) => {
     if (!group.current || state === 'sleeping') return;
-    group.current.position.y = celebrating ? .045 + Math.abs(Math.sin(clock.elapsedTime * 5.5)) * .34 : study ? 0 : .045 + Math.sin(clock.elapsedTime * 1.4) * .035;
+    group.current.position.y = celebrating ? .045 + Math.abs(Math.sin(clock.elapsedTime * 5.5)) * .34 : silverHook ? 0 : .045 + Math.sin(clock.elapsedTime * 1.4) * .035;
     group.current.rotation.z = celebrating ? Math.sin(clock.elapsedTime * 5.5) * .08 : 0;
-    group.current.rotation.y = study ? 0 : Math.sin(clock.elapsedTime * .55) * .10;
+    group.current.rotation.y = silverHook ? 0 : Math.sin(clock.elapsedTime * .55) * .10;
   });
-  return <group ref={group}>{study
+  return <group ref={group}>{silverHook
     ? <AssetBoundary fallback={null}><Suspense fallback={null}><StudySilverHook /></Suspense></AssetBoundary>
     : <ModelAsset asset={state === 'cooking' ? cookingElfAsset : elfAsset}/>}</group>;
 }
