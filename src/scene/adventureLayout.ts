@@ -1,4 +1,4 @@
-import { studyWritingTable } from './studyWritingTableLayout';
+import { studyScrollCabinetPosition, studyWritingTable } from './studyWritingTableLayout';
 import { canStandAt, scenes } from './config';
 import type { Vec3 } from './types';
 
@@ -14,11 +14,14 @@ export function isNearAdventureVessel(position: Vec3) {
 
 export function storyTarget(nodeId: string): Vec3 {
   if (nodeId === 'fire-trace') return [-3.6, .01, 2];
-  if (['a1-missing', 'a1-returned'].includes(nodeId)) return [studyWritingTable.position[0], 1.05, studyWritingTable.position[2] - .66];
+  if (['a1-missing', 'a1-returned'].includes(nodeId)) return [...studyScrollCabinetPosition];
   if (nodeId === 'a2-letter') return [-13.1, .12, -10.6];
-  if (['a3-empty', 'a3-restored', 'a3-letter'].includes(nodeId)) return [3.7, .03, -2];
+  if (['a3-empty', 'a3-restored'].includes(nodeId)) return [3.7, .03, -2];
+  // Reuse the flat letter already resting beside the returned shoes and hat.
+  if (nodeId === 'a3-letter') return [3.75, .03 + .475 * .5, -1.94];
   if (['neighbor-letter', 'a5-letter'].includes(nodeId)) return [-4.8, .03, -1.6];
-  if (nodeId === 'a3-defense') return [2.12, 1.1, -4.12];
+  if (nodeId === 'a3-defense') return [studyWritingTable.position[0],
+    studyWritingTable.position[1] + studyWritingTable.tabletopHeight + .008, studyWritingTable.position[2]];
   if (['a4-reveal', 'a4-fragments', 'second-tile', 'second-fragments'].includes(nodeId)) return [-3.9, .02, -3.4];
   if (['a5-clothes', 'a5-clothes-returned'].includes(nodeId)) return [-9.2, .05, 4.9];
   if (nodeId === 'wei-letter') return [2.64, 2.1, -2.45];
@@ -28,7 +31,8 @@ export function storyTarget(nodeId: string): Vec3 {
 
 /** Author reachable approaches around the existing furniture, walls and planting. */
 export function storyApproach(nodeId: string): Vec3 {
-  if (['a1-missing', 'a1-returned', 'a3-defense'].includes(nodeId)) return [2.45, .272, -3.25];
+  if (['a1-missing', 'a1-returned'].includes(nodeId)) return [.65, .272, -2.35];
+  if (nodeId === 'a3-defense') return [2.45, .272, -3.25];
   if (['a5-clothes', 'a5-clothes-returned'].includes(nodeId)) return [-10.8, 0, 6.3];
   const [x, , z] = storyTarget(nodeId);
   const scene = scenes.courtyard;

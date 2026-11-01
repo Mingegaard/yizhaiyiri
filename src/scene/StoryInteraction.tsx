@@ -15,11 +15,18 @@ export function StoryInteraction({ view, nodeId, label, blocked, onInteract, pas
   const nearby = useRef(false);
   const tag = useRef<HTMLSpanElement>(null);
   const source = useMemo(() => {
-    if (view.prop === 'books') return null; // Inspect the books already on the user's table.
-    if (view.prop === 'letter') return { ...gameProp('letter_visible'), scale: .4 };
+    if (view.prop === 'books') return null; // Inspect the existing scroll cabinet.
+    if (view.prop === 'letter') {
+      if (nodeId === 'a3-letter') return null; // Its letter is part of the retained shoes table.
+      if (view.state === 'talisman') return { ...gameProp('letter_visible'), scale: .4 };
+      const letter = { ...gameProp('letter_collected'), scale: .4 };
+      // This letter rests on the furnished writing table, without another desk.
+      return nodeId === 'a3-defense' ? { ...letter, position: [0, -1.08 * .4, 0] as [number, number, number],
+        includePrefixes: ['letter_collected__paper', 'letter_collected__ink', 'letter_collected__red'] } : letter;
+    }
     if (view.prop === 'none') return null;
     return { ...gameProp(`${view.prop}_${view.state}`, view.prop === 'clothes' && view.state === 'hanging' ? [0, 1.1, 0] : [0, 0, 0]), scale: .5 };
-  }, [view.prop, view.state]);
+  }, [view.prop, view.state, nodeId]);
   useFrame(({ camera }) => {
     if (passive) return;
     nearby.current = Math.hypot(camera.position.x - target[0], camera.position.z - target[2]) < 2.5;

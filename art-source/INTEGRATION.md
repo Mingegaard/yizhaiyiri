@@ -52,3 +52,7 @@ The original timer, activity rewards, photo storage, tally charging, story progr
 | Copy | Original game content plus reference plaques | Narrative copy and progression remain unchanged. Plaques, a movement hint, model-loading text and a readable location backing are purposeful additions. |
 
 No unresolved reference-asset substitutions are known. This is a browser game requiring WebGL and a local or static HTTP server; it is not a replacement for the original standalone model-preview HTML.
+
+## Story evidence placement
+
+The missing/returned book inspections reuse the existing scroll cabinet on the writing table. Their ring, click target and west-side approach use the cabinet center at `[1.7915, 1.05, -2.89]`, leaving the two folio stacks as decoration. Ordinary letter clues reuse the existing flat `letter_collected` geometry. The letter beside the returned shoes and hat is inspected directly on its original table, without adding a second desk; the study letter keeps only its paper, writing and seal meshes and rests on the furnished writing tabletop. The roof talisman retains its separate presentation. Story navigation accounts for platform height when aiming at evidence. No source model, pigment, progression, payment or reward rules are changed.

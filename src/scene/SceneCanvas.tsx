@@ -46,8 +46,10 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
     const next = storyApproach(storyTravel.nodeId), point = storyTarget(storyTravel.nodeId);
     position.current = next;
     const dx = point[0] - next[0], dz = point[2] - next[2];
-    const gazeHeight = storyTravel.nodeId === 'a5-clothes' ? 2.1 : point[1] + .35;
-    view.current = { yaw: Math.atan2(dx, -dz), pitch: Math.atan2(gazeHeight - EYE_HEIGHT, Math.hypot(dx, dz)) };
+    const gazeHeight = ['a1-missing', 'a1-returned'].includes(storyTravel.nodeId) ? point[1] + .13
+      : ['a3-letter', 'a3-defense'].includes(storyTravel.nodeId) ? point[1]
+      : storyTravel.nodeId === 'a5-clothes' ? 2.1 : point[1] + .35;
+    view.current = { yaw: Math.atan2(dx, -dz), pitch: Math.atan2(gazeHeight - EYE_HEIGHT - next[1], Math.hypot(dx, dz)) };
     previousReport.current = '';
   }, [storyTravel?.id]);
   useEffect(() => { previousReport.current = ''; }, [storyNodeId]);

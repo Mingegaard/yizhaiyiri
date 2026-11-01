@@ -14,6 +14,13 @@ export const studyWritingTable = {
   tabletopHeight: .77,
 };
 
+// The cabinet's authored Blender center is (.64, .071); the table faces west.
+export const studyScrollCabinetPosition: Vec3 = [
+  studyWritingTable.position[0] + .071,
+  studyWritingTable.position[1] + studyWritingTable.tabletopHeight + .008,
+  studyWritingTable.position[2] + .64,
+];
+
 export const studyWritingTableCollider: Collider = {
   minX: studyWritingTable.position[0] - studyWritingTable.depth / 2,
   maxX: studyWritingTable.position[0] + studyWritingTable.depth / 2,
