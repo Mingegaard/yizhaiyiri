@@ -18,6 +18,7 @@ import { KitchenSmoke } from './KitchenSmoke';
 import { companionPlaces, healthyFocusPose, isNearHealthyCompanion } from './healthyCompanion';
 import { AtmosphereMotionContext } from './atmosphereMotion';
 import { advanceWalkingCamera, createWalkingCamera, resetWalkingCamera, walkingCameraPose } from './walkingCamera';
+import { advanceLocomotion, createLocomotion, locomotionSpeed, resetLocomotion, sprintRequested, startJump } from './locomotion';
 import type { SceneCanvasProps, SceneDefinition, SceneId, Vec3 } from './types';
 
 interface WalkingPose { position: Vec3; yaw: number; pitch: number }
@@ -30,6 +31,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
   const view = useRef({ yaw: saved?.yaw ?? 0, pitch: saved?.pitch ?? 0 });
   const position = useRef<Vec3>(saved ? [...saved.position] : [...definition.spawn]);
   const walkingCamera = useRef(createWalkingCamera(position.current, view.current));
+  const locomotion = useRef(createLocomotion());
   const reducedMotion = useRef(false);
   const pointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const latest = useRef({ blocked: blocked || !!overview, overview: !!overview, focused: !!focusView, focusView, celebrating, healthActivityId, onCompanionNear, onPortalNear, onDeskNear, onDaybedNear, onFocusReady, onPosition });
@@ -54,6 +56,8 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
       : storyTravel.nodeId === 'a5-clothes' ? 2.1 : point[1] + .35;
     view.current = { yaw: Math.atan2(dx, -dz), pitch: Math.atan2(gazeHeight - EYE_HEIGHT - next[1], Math.hypot(dx, dz)) };
     resetWalkingCamera(walkingCamera.current, position.current, view.current);
+    resetLocomotion(locomotion.current);
+    keys.current.clear();
     previousReport.current = '';
   }, [storyTravel?.id]);
   useEffect(() => { previousReport.current = ''; }, [storyNodeId]);
@@ -62,6 +66,8 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
     position.current = [...travel.position];
     view.current = { yaw: travel.yaw, pitch: 0 };
     resetWalkingCamera(walkingCamera.current, position.current, view.current);
+    resetLocomotion(locomotion.current);
+    keys.current.clear();
     previousReport.current = '';
   }, [travel?.id, definition.id]);
 
@@ -72,7 +78,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
       camera.fov = 64;
       camera.updateProjectionMatrix();
     }
-    const pose = walkingCameraPose(walkingCamera.current, position.current);
+    const pose = walkingCameraPose(walkingCamera.current, position.current, locomotion.current.height);
     camera.position.set(...pose.position);
     camera.lookAt(...pose.target);
   }, [camera, size.width, size.height, overview]);
@@ -86,21 +92,29 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
   }, []);
 
   useEffect(() => {
-    const watched = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']);
+    const watched = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'ShiftLeft', 'ShiftRight']);
     const release = () => {
       keys.current.clear();
+      locomotion.current.sprint = 0;
       pointer.current = null;
       inputRef.current.forward = 0;
       inputRef.current.right = 0;
       inputRef.current.turn = 0;
     };
     const down = (event: KeyboardEvent) => {
-      if (latest.current.blocked || latest.current.focused || (event.target as HTMLElement)?.closest('input,textarea,select,[contenteditable="true"]')) return;
-      if (watched.has(event.code)) { event.preventDefault(); keys.current.add(event.code); }
+      if (latest.current.blocked || latest.current.focused || latest.current.celebrating || event.ctrlKey || event.metaKey || event.altKey || (event.target as HTMLElement)?.closest('input,textarea,select,[contenteditable="true"]')) return;
+      // Space keeps its normal activation behavior when a UI control has keyboard focus.
+      if (event.code === 'Space' && (event.target as HTMLElement)?.closest('button,a,summary,[role="button"]')) return;
+      if (watched.has(event.code)) {
+        event.preventDefault();
+        if (event.code === 'Space' && !event.repeat && !keys.current.has('Space')) startJump(locomotion.current);
+        keys.current.add(event.code);
+      }
     };
     const up = (event: KeyboardEvent) => keys.current.delete(event.code);
     const startDrag = (event: PointerEvent) => {
       if (latest.current.blocked || latest.current.focused || event.button !== 0) return;
+      gl.domElement.focus({ preventScroll: true });
       pointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
       gl.domElement.setPointerCapture(event.pointerId);
     };
@@ -118,6 +132,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
       view.current = wheelLook(view.current, event, latest.current.blocked || latest.current.focused);
     };
     const canvas = gl.domElement;
+    canvas.tabIndex = 0;
     window.addEventListener('keydown', down);
     window.addEventListener('keyup', up);
     window.addEventListener('blur', release);
@@ -147,32 +162,35 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
   }, [gl, inputRef, poses, definition.id]);
 
   useEffect(() => {
-    if (!blocked && !focusView && !overview) return;
+    if (!blocked && !focusView && !overview && !celebrating) return;
     keys.current.clear();
     pointer.current = null;
     inputRef.current.forward = 0;
     inputRef.current.right = 0;
     inputRef.current.turn = 0;
-  }, [blocked, !!focusView, overview, inputRef]);
+    locomotion.current.sprint = 0;
+    if (focusView || overview || celebrating) resetLocomotion(locomotion.current);
+  }, [blocked, !!focusView, overview, celebrating, inputRef]);
 
   useFrame((_, rawDelta) => {
     const dt = Math.min(rawDelta, .05);
     const key = keys.current;
-    const paused = latest.current.blocked || latest.current.focused || document.hidden;
+    const paused = latest.current.blocked || latest.current.focused || latest.current.celebrating || document.hidden;
     if (!paused) {
       const input = walkingInput(key, inputRef.current);
+      advanceLocomotion(locomotion.current, dt, sprintRequested(key, input.forward));
       view.current.yaw += input.turn * dt * 1.2;
       position.current = moveOnGround(
         position.current, view.current.yaw,
         input.forward, input.right,
-        dt, definition,
+        dt, definition, locomotionSpeed(locomotion.current, input.forward),
       );
     }
 
     if (latest.current.focused || latest.current.overview || latest.current.celebrating) {
       resetWalkingCamera(walkingCamera.current, position.current, view.current);
     } else {
-      advanceWalkingCamera(walkingCamera.current, position.current, view.current, dt, paused, reducedMotion.current);
+      advanceWalkingCamera(walkingCamera.current, position.current, view.current, dt, paused, reducedMotion.current, locomotion.current.height > 0);
     }
 
     // Focus never changes the walking refs, so leaving it restores the exact prior pose.
@@ -206,7 +224,7 @@ function Navigation({ definition, inputRef, blocked, overview, focusView, celebr
         seatTransition.current = null;
         const pose = latest.current.focused
           ? firstPersonPose(position.current, view.current.yaw, view.current.pitch, true, size.width / size.height)
-          : walkingCameraPose(walkingCamera.current, position.current);
+          : walkingCameraPose(walkingCamera.current, position.current, locomotion.current.height);
         camera.position.set(...pose.position);
         target.current.set(...pose.target);
         camera.lookAt(target.current);

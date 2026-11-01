@@ -282,7 +282,7 @@ export default function App() {
           <button className={`daily-note ${availableActivity ? 'has-task' : ''}`} data-testid="healthy-task-label" disabled={!availableActivity || occupied} onClick={() => setPanel('activity')}><SilverHookIcon/><span>{availableActivity ? availableActivity.title : '闲时'}</span></button>
         </div>
       </> : null}
-      {!panel && !preview && !viewingOverview ? <>{!hasWalked ? <div className="walk-guide"><span className="desktop-guide">WASD / 方向键行走 · 拖动画面环顾</span><span className="mobile-guide">滑动画面环顾</span></div> : null}</> : null}
+      {!panel && !preview && !viewingOverview ? <>{!hasWalked ? <div className="walk-guide"><span className="desktop-guide">WASD / 方向键行走 · 空格跳跃 · Shift 加速前进 · 拖动画面环顾</span><span className="mobile-guide">滑动画面环顾</span></div> : null}</> : null}
       {viewingOverview && !panel && !preview ? <div className="overview-toolbar" data-testid="overview-toolbar"><div><span className="overview-label">全院鸟瞰</span><p className="desktop-guide">拖动旋转 · 滚轮缩放 · 右键平移 · Esc 返回</p><p className="mobile-guide">单指旋转 · 双指缩放与平移</p></div><button type="button" aria-label="复位鸟瞰视角" title="复位视角" onClick={() => setOverviewResetKey(value => value + 1)}><RotateCcw size={17}/><span>复位</span></button></div> : null}
       <div className="estate-tools"><button onClick={() => setPanel('help')} aria-label="玩法说明"><HelpCircle size={17}/></button><button onClick={() => setPanel('settings')} aria-label="设置与演示"><Settings2 size={17}/></button></div>
     </> : null}

@@ -1,4 +1,4 @@
-import { firstPersonPose } from './config';
+import { firstPersonPose, WALK_SPEED } from './config';
 import type { Vec3 } from './types';
 
 interface Look { yaw: number; pitch: number }
@@ -37,7 +37,7 @@ const damp = (from: number, to: number, rate: number, dt: number) => from + (to 
 /** Distance drives footsteps, so pushing against a wall never produces walking in place. */
 export function advanceWalkingCamera(
   state: WalkingCamera, ground: Vec3, look: Look, delta: number,
-  paused = false, reducedMotion = false,
+  paused = false, reducedMotion = false, airborne = false,
 ) {
   const distance = Math.hypot(ground[0] - state.previousX, ground[2] - state.previousZ);
   if (reducedMotion || distance > .5) {
@@ -49,9 +49,9 @@ export function advanceWalkingCamera(
   // Hold the composition behind dialogs; resume without a breathing phase jump.
   if (paused || delta <= 0) return;
   const dt = Math.min(delta, .05);
-  const walking = Math.min(1, distance / dt / 3.3);
+  const walking = airborne ? 0 : Math.min(1, distance / dt / WALK_SPEED);
   state.weight = damp(state.weight, walking, walking > state.weight ? 16 : 22, dt);
-  state.stepPhase = (state.stepPhase + distance * Math.PI * 2 / 1.35) % (Math.PI * 4);
+  state.stepPhase = (state.stepPhase + (airborne ? 0 : distance) * Math.PI * 2 / 1.35) % (Math.PI * 4);
   state.breathPhase = (state.breathPhase + dt * Math.PI * 2 / 4.8) % (Math.PI * 2);
   const breath = Math.sin(state.breathPhase) * (1 - .85 * state.weight);
   // A small, quick footfall keeps the horizon quiet; avoid the slow side-to-side sway.
@@ -64,10 +64,10 @@ export function advanceWalkingCamera(
   state.floor = damp(state.floor, ground[1], 18, dt);
 }
 
-export function walkingCameraPose(state: WalkingCamera, ground: Vec3) {
+export function walkingCameraPose(state: WalkingCamera, ground: Vec3, jumpHeight = 0) {
   return firstPersonPose([
     ground[0] + Math.cos(state.yaw) * state.side,
-    state.floor + state.lift,
+    state.floor + state.lift + jumpHeight,
     ground[2] + Math.sin(state.yaw) * state.side,
   ], state.yaw, state.pitch + state.nod, false);
 }

@@ -6,6 +6,7 @@ import { studyDaybedCollider } from './studyDaybedLayout';
 import { studyWritingTableCollider } from './studyWritingTableLayout';
 
 export const EYE_HEIGHT = 1.5;
+export const WALK_SPEED = 3.3;
 /** Surveyed from the supplied courtyard GLB, normalized at 0.8 metres per source unit. */
 export const study = {
   center: [0, 0, studyZ(-2)] as Vec3,
@@ -154,7 +155,7 @@ export function wheelLook(view: LookOrientation, event: LookWheelEvent, locked =
 }
 
 /** Ground motion stays horizontal even while the first-person camera looks up or down. */
-export function moveOnGround(position: Vec3, yaw: number, forward: number, right: number, deltaSeconds: number, scene: SceneDefinition, speed = 3.3): Vec3 {
+export function moveOnGround(position: Vec3, yaw: number, forward: number, right: number, deltaSeconds: number, scene: SceneDefinition, speed = WALK_SPEED): Vec3 {
   const magnitude = Math.hypot(forward, right);
   if (!magnitude) return position;
   const length = Math.max(1, magnitude);
