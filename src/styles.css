@@ -261,6 +261,11 @@ small { font-size: 12px; }
 .healthy-celebration { position: absolute; inset: 0; pointer-events: none; z-index: 4; box-shadow: inset 0 0 140px #e6cf9940; animation: healthy-joy 3.6s ease both; }
 @keyframes healthy-joy { 0%,100% { opacity: 0; } 20%,80% { opacity: 1; } }
 .healthy-card-modal { width: min(430px, calc(100vw - 32px)); }
+.healthy-card-dialogue-modal { inset: auto 0 max(24px, env(safe-area-inset-bottom)) 0; margin: 0 auto; width: min(660px, calc(100vw - 32px)); border-radius: 0; background: #f3edddf5; }
+.healthy-card-dialogue-modal::backdrop { background: #3f453b0d; backdrop-filter: none; }
+.healthy-card-dialogue { padding: 26px 32px 18px; text-align: center; font-family: var(--serif); }
+.healthy-card-dialogue p { margin: 0 0 16px; color: #565744; font-size: 19px; line-height: 1.9; }
+.healthy-card-dialogue .healthy-destination { width: auto; margin: 0 auto; padding: 8px 18px; border-top: 1px solid #bdac8c66; }
 .healthy-knowledge { text-align: center; padding: 30px 28px 24px; font-family: var(--serif); }
 .healthy-knowledge:focus { outline: none; }
 .knowledge-category { color: #8e8067; font-size: 12px; letter-spacing: 3px; }
@@ -273,18 +278,18 @@ small { font-size: 12px; }
 .knowledge-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: center; gap: 30px; }
 .knowledge-illustration { min-width: 0; margin: 0; }
 .knowledge-illustration img { display: block; width: 100%; height: 325px; object-fit: contain; }
-.image-outdoors-agate-cup img { height: 245px; object-fit: cover; }
-.image-outdoors-dancing-horse img { object-fit: cover; object-position: center 65%; }
+.image-outdoors-agate-cup img { height: 245px; }
 .knowledge-illustration figcaption { margin-top: 20px; padding-top: 14px; border-top: 1px solid #bdac8c66; color: #7f715d; font-size: 12px; line-height: 1.8; letter-spacing: .04em; }
 .knowledge-illustration figcaption span { display: block; font-size: 11px; color: #95846c; margin-top: 4px; }
 .knowledge-reading { text-align: left; }
 .knowledge-tip { padding: 0 0 16px; border-bottom: 1px solid #bdac8c66; margin-bottom: 18px; }
-.knowledge-tip > span { font-size: 11px; letter-spacing: .14em; color: #8c604b; }
 .knowledge-tip p { margin: 8px 0 0; font-size: 15px; line-height: 1.9; color: #7f664f; }
 .knowledge-copy p { margin: 0 0 15px; font-size: 14px; line-height: 2; }
 .knowledge-copy p:last-child { margin-bottom: 0; }
 .knowledge-illustrated > .healthy-return { border-top: 1px solid #bdac8c66; min-width: 120px; padding-top: 15px; margin-top: 24px; }
 @media(max-width: 620px) {
+  .healthy-card-dialogue { padding: 22px 20px 14px; }
+  .healthy-card-dialogue p { font-size: 17px; }
   .knowledge-illustrated { padding: 25px 22px 18px; }
   .knowledge-illustrated h2 { font-size: 22px; letter-spacing: .05em; margin-bottom: 18px; }
   .knowledge-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }

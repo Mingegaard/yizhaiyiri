@@ -11,6 +11,7 @@ import { companionPlaces, healthyTravel } from './scene/healthyCompanion';
 import { estateAtmosphere } from './scene/estateAtmosphere';
 import { SilverHookIcon } from './components/SilverHookIcon';
 import { HealthyKnowledge } from './components/HealthyKnowledge';
+import { knowledgeCards } from './content/cards';
 import { ActivityPanel } from './components/ActivityPanel';
 import { Modal } from './components/Modal';
 import { MemoryBook } from './components/MemoryBook';
@@ -45,7 +46,7 @@ export default function App() {
   const [message, setMessage] = useState('');
   const [preview, setPreview] = useState<{ file: File; url: string; activityId: ActivityId } | null>(null);
   const [period, setPeriod] = useState(() => demo ? (localStorage.getItem('yizhaiyiri-demo-period') ?? 'real') : 'real');
-  const [outdoorsDemoReady, setOutdoorsDemoReady] = useState(false);
+  const [openedHealthyCard, setOpenedHealthyCard] = useState<string | null>(null);
   const inputRef = useRef<MovementInput>({ forward: 0, right: 0, turn: 0 });
   const uploadRef = useRef<HTMLInputElement>(null);
   const photoActivityRef = useRef<ActivityId | null>(null);
@@ -98,6 +99,8 @@ export default function App() {
   const { night, sunset, kitchenSmoking } = atmosphere;
   const activityDone = !!activity && state.completedActivities.includes(`${localDay(now)}:${activity.id}`);
   const celebration = state.healthyCelebration;
+  const outdoorsCard = celebration?.activityId === 'outdoors' && celebration.cardId ? knowledgeCards[celebration.cardId] : undefined;
+  const cardDialogue = !!outdoorsCard?.tip && openedHealthyCard !== celebration?.memoryId;
   const availableActivity = activity && !activityDone ? activity : null;
   const healthyId = celebration?.activityId ?? state.session?.activityId ?? activity?.id;
   const healthyScene = healthyId ? companionPlaces[healthyId].sceneId : undefined;
@@ -124,12 +127,6 @@ export default function App() {
     if ((panel === 'activity' || panel === 'health-action') && (!availableActivity || previousActivity.current !== availableActivity.id)) setPanel(null);
     previousActivity.current = availableActivity?.id;
   }, [availableActivity?.id, panel]);
-  useEffect(() => {
-    if (outdoorsDemoReady && availableActivity?.id === 'outdoors') {
-      setOutdoorsDemoReady(false);
-      setPanel('health-action');
-    }
-  }, [outdoorsDemoReady, availableActivity?.id]);
   useEffect(() => {
     if (!celebration) return;
     setPanel(null);
@@ -242,9 +239,14 @@ export default function App() {
       localStorage.setItem('yizhaiyiri-demo-period', '16');
       setPeriod('16');
       setSceneId('courtyard');
+      setTravel(healthyTravel('outdoors', Date.now()));
+      setCompanionNear(false);
+      setDeskNear(false);
+      setDaybedNear(false);
+      setPortal(null);
+      encountered.current = null;
       setOverview(false);
       setPanel(null);
-      setOutdoorsDemoReady(true);
     }
   }
   const viewingOverview = overview && !occupied && !vesselTransition;
@@ -257,7 +259,7 @@ export default function App() {
   return <main className={`estate ${night ? 'night' : ''} ${focusing ? 'is-focusing' : ''}`} data-testid="estate" data-mode={meditationEntry && !state.session ? 'settling' : focusing ? 'focus' : viewingOverview ? 'overview' : 'walk'}>
     <section className="estate-world" aria-label={viewingOverview ? '宅院全景鸟瞰' : `${SCENE_NAMES[renderedSceneId]}第一人称场景`}>
       <Suspense fallback={<div className="scene-loading">庭院正在展开…</div>}>
-        <SceneCanvas sceneId={renderedSceneId} overview={viewingOverview} overviewResetKey={overviewResetKey} elfState={elfState} night={night} sunset={sunset} kitchenSmoking={kitchenSmoking} healthActivityId={healthyId} celebrating={!!celebration} travel={travel} onCompanionNear={nearCompanion} blocked={controlsBlocked} inputRef={inputRef} onPortalNear={nearPortal} onDeskNear={nearDesk} onDaybedNear={nearDaybed} onFocusReady={finishMeditationEntry} onPosition={recordWalk} focusView={focusView} rods={state.rods} onVesselTouch={touchVessel} vesselTransition={vesselTransition} onVesselTransitionComplete={finishVesselTransition}/>
+        <SceneCanvas sceneId={renderedSceneId} overview={viewingOverview} overviewResetKey={overviewResetKey} elfState={elfState} night={night} sunset={sunset} kitchenSmoking={kitchenSmoking} healthActivityId={healthyId} celebrating={!!celebration} companionSpeaking={!!outdoorsCard?.tip} travel={travel} onCompanionNear={nearCompanion} blocked={controlsBlocked} inputRef={inputRef} onPortalNear={nearPortal} onDeskNear={nearDesk} onDaybedNear={nearDaybed} onFocusReady={finishMeditationEntry} onPosition={recordWalk} focusView={focusView} rods={state.rods} onVesselTouch={touchVessel} vesselTransition={vesselTransition} onVesselTransitionComplete={finishVesselTransition}/>
       </Suspense>
     </section>
 
@@ -290,7 +292,12 @@ export default function App() {
     {state.session ? <FocusRetreat key={state.session.id} session={state.session} now={now} busy={busy} onPause={() => void command({ type: 'pauseTimer' })} onResume={() => void command({ type: 'resumeTimer' })} onCancel={() => void command({ type: 'cancelTimer' })}/> : null}
     {meditationEntry && !state.session ? <div className="focus-retreat meditation-arriving" data-testid="meditation-arriving"><div className="quiet-clock"><span role="status">缓缓入座…</span></div></div> : null}
     {celebration && !celebration.cardId ? <div className="healthy-celebration" role="status" data-testid="healthy-celebration"><span className="visually-hidden">银钩正雀跃着</span></div> : null}
-    {celebration?.cardId ? <Modal title="银钩的知识卡片" className="healthy-card-modal" showClose={false} onClose={() => void command({ type: 'dismissHealthyCelebration', memoryId: celebration.memoryId })}><HealthyKnowledge cardId={celebration.cardId} onClose={() => void command({ type: 'dismissHealthyCelebration', memoryId: celebration.memoryId })}/></Modal> : null}
+    {celebration?.cardId ? <Modal title={cardDialogue ? '银钩' : '银钩的知识卡片'} className={cardDialogue ? 'healthy-card-dialogue-modal' : 'healthy-card-modal'} showClose={false} onClose={() => void command({ type: 'dismissHealthyCelebration', memoryId: celebration.memoryId })}>
+      {cardDialogue ? <section className="healthy-card-dialogue" data-testid="healthy-card-dialogue" data-card-id={celebration.cardId}>
+        <p>{outdoorsCard!.tip}</p>
+        <button className="healthy-destination" onClick={() => setOpenedHealthyCard(celebration.memoryId)}>进入详情</button>
+      </section> : <HealthyKnowledge cardId={celebration.cardId} onClose={() => void command({ type: 'dismissHealthyCelebration', memoryId: celebration.memoryId })}/>}
+    </Modal> : null}
 
     <input ref={uploadRef} hidden type="file" accept="image/*" aria-label="上传生活照片" onChange={event => {
       const file = event.target.files?.[0];

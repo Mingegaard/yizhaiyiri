@@ -14,7 +14,6 @@ export function HealthyKnowledge({ cardId, onClose, closeLabel = '收下' }: { c
   }, [cardId]);
   if (!card) return null;
   if (card.image) return <article ref={article} tabIndex={-1} className="healthy-knowledge knowledge-illustrated" data-testid="healthy-knowledge" data-card-id={card.id}>
-    <span className="knowledge-category">{card.category}</span>
     <h2>{card.title}</h2>
     <div className="knowledge-layout">
       <figure className={`knowledge-illustration image-${card.id}`}>
@@ -22,7 +21,7 @@ export function HealthyKnowledge({ cardId, onClose, closeLabel = '收下' }: { c
         <figcaption>{card.artifactName}<span>{card.source}</span></figcaption>
       </figure>
       <div className="knowledge-reading">
-        {card.tip ? <aside className="knowledge-tip"><span>银钩提示</span><p>{card.tip}</p></aside> : null}
+        {card.tip ? <aside className="knowledge-tip"><p>{card.tip}</p></aside> : null}
         <div className="knowledge-copy">{card.body.split('\n\n').map(paragraph => <p key={paragraph}>{paragraph}</p>)}</div>
       </div>
     </div>

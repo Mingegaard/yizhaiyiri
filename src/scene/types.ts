@@ -29,6 +29,7 @@ export interface SceneCanvasProps {
   kitchenSmoking?: boolean;
   healthActivityId?: ActivityId;
   celebrating?: boolean;
+  companionSpeaking?: boolean;
   travel?: { id: number; sceneId: SceneId; position: Vec3; yaw: number };
   onCompanionNear?: (near: boolean) => void;
   overview?: boolean;
